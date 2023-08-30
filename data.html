@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+         <style>
+                body {
+                        font-family: Minion Pro Display;
+                }
+.admonition {
+background-color: #f7f7f7;
+margin-bottom: 10px;
+position: relative;
+overflow: hidden;
+padding-left: 12px; /* Added padding to create space between the vertical stripe and the label */
+}
+/* This is the vertical stripe */
+.admonition:before {
+content: ;
+position: absolute;
+top: 0;
+left: 0;
+width: 6px;
+height: 100%;
+background-color: #ffa500; /* Default vertical stripe color */
+}
+
+/* Add more custom classes and styles for different variants if desired */
+
+.admonition h4 {
+margin: 0;
+padding: 10px 8px;
+font-size: 18px;
+color: black; /* Adjust the color as needed */
+background-color: #f4e7d4; /* Adjust the default header background color as needed */
+border-radius: 0 4px 4px 0; /* Added border-radius to only round the right side */
+margin-left: -6px;
+margin-right: -8px;
+}
+
+.admonition.example h4 {
+background-color: #f2edff;
+}
+
+/* format for admonition variants */
+.admonition.example:before {
+background-color: #7C4DFF;
+}
+
+.admonition.note h4 {
+background-color: #ecf3ff;
+}
+
+.admonition.note:before {
+background-color: #448aff;
+}
+
+.admonition.tip h4 {
+background-color: #e5f8f6;
+}
+
+.admonition.tip:before {
+background-color: #00bfa5;
+}
+.admonition.success h4 {
+background-color: green;
+}
+
+.admonition.success:before {
+background-color: green;
+}
+
+.admonition.warning h4 {
+background-color: ##fff4e5;
+}
+
+.admonition.warning:before {
+background-color: #ff9100;
+}
+
+.admonition.danger h4 {
+background-color: #ffe7ec;
+}
+
+.admonition.danger:before {
+background-color: #ff1744;
+}
+.admonition p {
+margin-top: 10px;
+}
+</style></head>
+<body>
+<h1>Table of Contents</h1>
+<p>Some stuff goes here</p>
+<h1>Introduction</h1>
+<p>This is my introduction. I hope it is good.</p>
+<h2>Sub header</h2>
+<p>Let's see if it can work on subheaders well.</p>
+<code>
+<p>int i = 0;</p>
+<p>if(i < 2)</p>
+<p>{</p>
+<p>     printf("Cool!\n");</p>
+<p>}</p>
+</code>
+<div class="admonition example">
+<h4>example: Admonition time </h4>
+<p>if you give a mouse a cookie</p>
+<p>then that is pretty cool</p>
+<p>I support that fully.</p>
+</div>
+<div class="admonition tip">
+<h4>tip: Admonition after another admonition</h4>
+<p>This is a fun project.</p>
+</div>
+<h1>New Header</h1>
+<p>The beginning of a new idea</p>
+<p>This is a list</p>
+<ul>
+<li>- list item two</li>
+<li>    - this is the beginning of an inner unordered list</li>
+<li>    - inner unordered list one</li>
+<li>- end of outer ordered list</li>
+<li>regular text</li>
+
+</body>
+</html>
