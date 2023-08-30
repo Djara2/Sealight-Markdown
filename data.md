@@ -34,11 +34,10 @@ This is a fun project.
 
 The beginning of a new idea
 
-This is a list
-- list item one
-- list item two
-	- this is the beginning of an inner unordered list
-	- inner unordered list one
-- end of outer ordered list
-
 regular text
+
+_ deflist
+a deflist is a way of doing definitions for terms
+In Sealight Markdown, a deflist is delimited by "_ "
+_ 
+
