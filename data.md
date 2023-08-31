@@ -32,12 +32,13 @@ This is a fun project.
 
 # New Header
 
-The beginning of a new idea
+The beginning of a **new** idea
 
 regular text
 
 _ deflist
 a deflist is a way of doing definitions for terms
 In Sealight Markdown, a deflist is delimited by "_ "
-_ 
+_  
 
+The third **ever** commit to this project allows for *italic* , **bold** , and ***italic bold text.*** Isn't that pretty cool? *I think so.* In fact, I would say that **many people think it is coool.**
