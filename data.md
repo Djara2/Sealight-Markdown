@@ -41,4 +41,6 @@ a deflist is a way of doing definitions for terms
 In Sealight Markdown, a deflist is delimited by "_ "
 _  
 
-The third **ever** commit to this project allows for *italic* , **bold** , and ***italic bold text.*** Isn't that pretty cool? *I think so.* In fact, I would say that **many people think it is coool.**
+The third **ever** commit to this project allows for *italic*, **bold**, and ***italic bold text***. Isn't that pretty cool? *I think so.* In fact, I would say that **many people think it is coool.**
+
+With the new im**pro**vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens.

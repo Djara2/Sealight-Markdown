@@ -1,0 +1,91 @@
+_ term
+: pla pla pla
+_
+
+
+1. break the line apart into tokens delimited by spaces
+2. check each token if it is bold
+3. if bold, change the token to include equivalent HTML tags
+4. join all the tokens
+5. set string_tokens[i] to the joined tokens
+
+Consider cases in this order:
+1. is italic bold initiated and terminated
+2. is italic bold initiated 
+3. is italic bold terminated
+4. is bold initiated and terminated
+5. is bold initiated
+6. is bold terminated
+7. is italic initiated and terminated
+8. is italic initiated
+9. it italic terminated
+
+***dave***
+0123456789
+---$$$$---
+
+10 - 3 = 7
+7 not included
+
+*dave* -> <i>dave</i>
+012345    01234567891
+                    0
+len 6     len 11
+
+-------------------------------
+1. new function that checks if the string
+contains "**" at any points and returns the
+INDEX of where the pattern begins. Call this 
+value X.
+
+2. check if the rest of the string (starting 
+from the index returned by the function in 
+step 1, plus 2 -- to skip over the remaining
+indices containing '*') also has "**". Call this
+value Y. If this is the case (Y != -1) then the substring 
+starting from the index X + 2 until Y (exclusive) is bold.
+
+3. The bold substring from step 2 may be the whole string or 
+part of the string. You have continue this process until it is not
+possible for the rest of the string to contain "**". You can check
+this by seeing if strlen(test_string) - Y >= 3
+
+"d**av**id"       strlen -> 9
+ 012345678        x -> 1 ... x + 2 = 3
+                  y -> 5 ... y + 2 = 7
+                  it is not possible that there 
+                  are any more bold openings/closings
+                  in the string, because there are only
+                  2 characters left in the string adjacent
+                  to Y + 1. This can be seen from the fact
+		  that strlen("d**av**id") - (Y+2) = 2
+
+if we had "d**av**ide" as the string, it would be possible
+that there is another bold opener, since there are 3 more characters
+
+"d**av**ide"       strlen -> 10
+ 0123456789        x -> 1 ... x + 2 = 3
+                   y -> 5 ... y + 2 = 7
+                   --------------------
+                   10 - 7 = 3
+                   --------------------
+                   it is possible that there are 
+                   more bold openings/closings
+                   in the string, because there are
+                   3 characters left in the string adjacent
+                   to Y + 1 (6). This can be seen from the fact
+		   that strlen("d**av**ide") - (Y+2) = 3
+
+cases passed: [italic bold]
+1. whole thing is bold
+2. first character only
+3. last character only
+4. middle string only
+5. everything but first and last characters
+
+cases passed: [italic]
+1. whole thing is italic
+2. first character only
+3. last character only
+4. middle string only
+5. everything but first and last characters
