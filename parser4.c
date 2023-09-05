@@ -355,6 +355,8 @@ int main(int argc, char *argv[])
 	bool italic_bold_initiated = false;
 	bool bold_initiated = false;
 	bool italic_initiated = false;
+	bool underline_initiated = false;
+	bool highlight_initiated = false;
 	bool MODIFY_FLAG = false; // used to keep track of whether or not a whitespace-delimited token from char *split 
 	                          // was modified to replace markdown with HTML (e.g. replacing ** for <b>)
 	int lower_bound;
@@ -397,8 +399,77 @@ int main(int argc, char *argv[])
 			// used to go through each individual character of split[split_index]
 			j = 0;
 
+
+			// case: underline (++underline++)
+			// NOTE: this is a single if case, not followed by else-if cases, because there is no
+			//       overlap between underline and other cases. The same cannot be said about italic, bold,
+			//       and italic bold, because they use the same character to delimit (*, **, and ***) 
+			if(preprocessing_token_len > 2 && is_substring(split[split_index], "++"))
+			{
+				printf("DEBUG: found token \"%s\" to be part of an underline section.\n", split[split_index]);
+				while(j < preprocessing_token_len - 1)
+				{
+					if(split[split_index][j] == '+' && split[split_index][j+1] == '+')
+					{
+						MODIFY_FLAG = true;
+						underline_initiated = flip_boolean(underline_initiated);
+
+						if(underline_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<u>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</u>");
+
+						j += 2;
+
+					}
+					else
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						j++;
+					}
+				}
+				// get whatever characters were missed
+				if(j < preprocessing_token_len && split[split_index][preprocessing_token_len - 1] != '+')
+				{
+					insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][preprocessing_token_len - 1]);
+				}
+			}
+
+
+			// case: highlight (==)
+			// NOTE: because "==" is commonly used in programming languages as the operator for checking equality,
+			//       it must also be the case that a code block is not currently being built for the <mark> tag
+			//       to be added.
+			if((is_substring(split[split_index], "==")) && (building_code_block != true) && (preprocessing_token_len > 2))
+			{
+				printf("DEBUG: found token \"%s\" to be part of a highlight section.\n", split[split_index]);
+				while(j < preprocessing_token_len - 1)
+				{
+					if(split[split_index][j] == '=' && split[split_index][j+1] == '=')
+					{
+						MODIFY_FLAG = true;
+						highlight_initiated = flip_boolean(highlight_initiated);
+
+						if(highlight_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<mark>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</mark>");
+
+						j += 2;
+
+					}
+					else
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						j++;
+					}
+				}
+				// get whatever characters were missed
+				if(j < preprocessing_token_len && split[split_index][preprocessing_token_len - 1] != '=')
+				{
+					insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][preprocessing_token_len - 1]);
+				}
+			}
+
+
 			// case: italic bold
-			if(is_substring(split[split_index], "***"))
+			if(preprocessing_token_len > 3 && is_substring(split[split_index], "***"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic bold section.\n", split[split_index]);
 				// the idea is to copy character by character until we reach the delimiter. If we reach the delimiter,
@@ -435,7 +506,7 @@ int main(int argc, char *argv[])
 			}
 
 			// case: bold
-			else if(is_substring(split[split_index], "**"))
+			else if(preprocessing_token_len > 2 && is_substring(split[split_index], "**"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of a bold section.\n", split[split_index]);
 				while(j < preprocessing_token_len - 1)
@@ -465,7 +536,7 @@ int main(int argc, char *argv[])
 			}
 
 			// case: italic
-			else if(string_contains_char(split[split_index], '*'))
+			else if(preprocessing_token_len > 1 && string_contains_char(split[split_index], '*'))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic section.\n", split[split_index]);
 				printf("DEBUG [ITALIC]: value of j is %d and value of preprocessing_token_len is %d\n", j, preprocessing_token_len);
