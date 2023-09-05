@@ -35,16 +35,6 @@ bool string_contains_char(char *source, char c)
 	return false;
 }
 
-int char_occurences(char *source, char c)
-{
-	int count = 0;
-	for(int i = 0; i < strlen(source); i++)
-	{
-		if(source[i] == c) count++;
-	}
-	return count;
-}
-
 void insert_char(char **string_ptr, int *len, int *capacity, char c)
 {
 	if( (*len) >= (*capacity) )
@@ -191,78 +181,6 @@ bool is_deflist(char *source)
 	return true;
 }
 
-// GENERAL NOTE: you must check in this order to avoid jumping to a conclusion:
-//               1. check if italic bold
-//               2. check if bold
-//               3. check if italic
-//               otherwise, if you check for italic first, for example, then you will
-//               determine the line **bold** to be italic, though it is bold.
-
-bool is_italic_initiated(char *source)
-{
-	int len = strlen(source);
-	if(len < 2) return false;
-
-	if(source[0] == '*' && source[1] != '*') return true;
-
-	return false; 
-}
-
-bool is_italic_terminated(char *source)
-{
-	int len = strlen(source);
-	if(len < 2) return false;
-
-	if(source[len-1] == '*' && source[len-2] != '*') return true;
-
-	return false;
-}
-
-bool is_bold_initiated(char *source)
-{
-	int len = strlen(source);
-
-	// text that demarcates the beginning or end of bold formatting must be at least 3 
-	// characters long, because it must include 2 asterisks that precede or follow 
-	// at least one non-asterisk character
-	if(len < 3) return false;
-
-	if(source[0] == '*' && source[1] == '*') return true;
-
-	return false;
-}
-
-bool is_bold_terminated(char *source)
-{ 	
-	int len = strlen(source);
-
-	if(len < 3) return false;
-
-	if(source[len-2] == '*' && source[len-1] == '*') return true;
-
-	return false;
-}
-
-bool is_italic_bold_initiated(char *source)
-{
-	int len = strlen(source);
-	if(len < 4) return false;
-
-	if(source[0] == '*' && source[1] == '*' && source[2] == '*') return true;
-
-	return false;
-}
-
-bool is_italic_bold_terminated(char *source)
-{
-	int len = strlen(source);
-	if(len < 4) return false;
-
-	if(source[len-1] == '*' && source[len-2] == '*' && source[len-3] == '*') return true;
-
-	return false;
-}
-
 char* string_substring(char *source, int inclusive_start, int exclusive_end)
 {
 	int required_chars = (exclusive_end - inclusive_start) + 1;
@@ -281,6 +199,15 @@ bool flip_boolean(bool b)
 {
 	if(b) return false;
 	else return true;
+}
+
+int first_index_of(char *source, char c)
+{
+	for(int i = 0; i < strlen(source); i++)
+	{
+		if(source[i] == c) return i;
+	}
+	return -1;
 }
 
 int main(int argc, char *argv[])
@@ -357,6 +284,7 @@ int main(int argc, char *argv[])
 	bool italic_initiated = false;
 	bool underline_initiated = false;
 	bool highlight_initiated = false;
+	bool single_line_code_initiated = false;
 	bool MODIFY_FLAG = false; // used to keep track of whether or not a whitespace-delimited token from char *split 
 	                          // was modified to replace markdown with HTML (e.g. replacing ** for <b>)
 	int lower_bound;
@@ -368,6 +296,7 @@ int main(int argc, char *argv[])
 	int partially_converted_html_len;
 	int partially_converted_html_capacity;
 	int j; // used to iterate through the characters of split[split_token] when replacing asterisks with <b> and <i> tags
+	int k; // used to hold the index after which all the content of an <li> element follows
 
 	// go through all the string_tokens, which are all just individual lines of the file
 	int i = 0;
@@ -467,9 +396,37 @@ int main(int argc, char *argv[])
 				}
 			}
 
+			// case: single line code (`int main(void)`)
+			// NOTE: this is a single if case, not followed by else-if cases, because there is no
+			//       overlap between single line code and other cases. The same cannot be said about italic, bold,
+			//       and italic bold, because they use the same character to delimit (*, **, and ***) 
+			else if(preprocessing_token_len > 1 && string_contains_char(split[split_index], '`') && (strcmp(split[split_index], "```") != 0))
+			{
+				printf("DEBUG: found token \"%s\" to be part of an italic section.\n", split[split_index]);
+				printf("DEBUG [SINGLE LINE CODE]: value of j is %d and value of preprocessing_token_len is %d\n", j, preprocessing_token_len);
+				while(j < preprocessing_token_len)
+				{
+					if(split[split_index][j] == '`')
+					{
+						MODIFY_FLAG = true;
+						single_line_code_initiated = flip_boolean(single_line_code_initiated);
+						
+						if(single_line_code_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<code>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</code>");
+					}
+					else
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+					}
+					j++;
+				}
+				// unlike italic-bold and bold, there is no need to try to get any missing characters. There should not
+				// be characters that were missing.
+			}
+
 
 			// case: italic bold
-			if(preprocessing_token_len > 3 && is_substring(split[split_index], "***"))
+			if(preprocessing_token_len > 3 && (single_line_code_initiated != true) && is_substring(split[split_index], "***"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic bold section.\n", split[split_index]);
 				// the idea is to copy character by character until we reach the delimiter. If we reach the delimiter,
@@ -506,7 +463,7 @@ int main(int argc, char *argv[])
 			}
 
 			// case: bold
-			else if(preprocessing_token_len > 2 && is_substring(split[split_index], "**"))
+			else if(preprocessing_token_len > 2 && (single_line_code_initiated != true) && is_substring(split[split_index], "**"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of a bold section.\n", split[split_index]);
 				while(j < preprocessing_token_len - 1)
@@ -536,7 +493,7 @@ int main(int argc, char *argv[])
 			}
 
 			// case: italic
-			else if(preprocessing_token_len > 1 && string_contains_char(split[split_index], '*'))
+			else if(preprocessing_token_len > 1 && (single_line_code_initiated != true) && string_contains_char(split[split_index], '*'))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic section.\n", split[split_index]);
 				printf("DEBUG [ITALIC]: value of j is %d and value of preprocessing_token_len is %d\n", j, preprocessing_token_len);
@@ -599,7 +556,30 @@ int main(int argc, char *argv[])
 		string_tokens[i] = strdup(joined);
 		free(joined);
 
+
+
 		printf("DEBUG: Found line \"%s\" to be %d for call to is_deflist\n", string_tokens[i], is_deflist(string_tokens[i]));
+
+		// case: bulleted list
+		// NOTE: though checking for bulleted list follows the same general idea as checking for whether or 
+		//       not we have a header or a multi-line code block, checking for a bulleted list has to be
+		//       its own if clause that is not part of a larger if-else if-else chain, because then otherwise
+		//       there is no mechanism to turn off the tagging of everything as <li>
+		if(is_unordered_list(string_tokens[i]))
+		{
+			building_unordered_list = flip_boolean(building_unordered_list);
+			
+			// add the <ul> tag
+			if(building_unordered_list) concatenate(&html, &html_len, &html_capacity, "<ul>\n");
+			else concatenate(&html, &html_len, &html_capacity, "</ul>\n");
+		}
+		else
+		{
+			if(building_unordered_list) concatenate(&html, &html_len, &html_capacity, "</ul>\n");
+			building_unordered_list = false;
+		}
+
+
 		// case: header
 		// ------------- do not check for bold or italic -- no bold or italic permitted in headers
 		if(string_tokens[i][0] == '#')
@@ -609,7 +589,7 @@ int main(int argc, char *argv[])
 			printf("Header level found to be %d for line \"%s\"\n", header_level, string_tokens[i]); 
 			while(string_tokens[i][header_level] == '#')
 			{
-	header_level++;
+				header_level++;
 			}
 
 			// add header tag 
@@ -709,16 +689,6 @@ int main(int argc, char *argv[])
 			else concatenate(&html, &html_len, &html_capacity, "</div>");
 		}
 
-		// case: bulleted list
-		else if(is_unordered_list(string_tokens[i]))
-		{
-			building_unordered_list = flip_boolean(building_unordered_list);
-			
-			// add the <ul> tag
-			if(building_unordered_list) concatenate(&html, &html_len, &html_capacity, "<ul>");
-			else concatenate(&html, &html_len, &html_capacity, "</ul>");
-		}
-
 		// case: deflist -- deflist is a little different here because it requires 
 		//                  '_' to be the first character as its delimiter, and it
 		//                  must be followed by a space
@@ -754,7 +724,10 @@ int main(int argc, char *argv[])
 			else if(building_unordered_list)
 			{
 				concatenate(&html, &html_len, &html_capacity, "<li>");
-				concatenate(&html, &html_len, &html_capacity, string_tokens[i]);
+				k = first_index_of(string_tokens[i], '-');
+				substring = string_substring(string_tokens[i], k+2, strlen(string_tokens[i]));
+				concatenate(&html, &html_len, &html_capacity, substring);
+				free(substring);
 				concatenate(&html, &html_len, &html_capacity, "</li>");
 			}
 			
@@ -791,6 +764,6 @@ int main(int argc, char *argv[])
 		free(string_tokens[j]);
 	
 	free(string_tokens);
-	return 0;
-	
+	free(html);
+	return 0;	
 }
