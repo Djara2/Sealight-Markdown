@@ -3,6 +3,17 @@
 #include <stdbool.h>
 #include <string.h>
 
+void replace_char(char *source, char target, char replacement)
+{
+	for(int i = 0; i < strlen(source); i++)
+	{
+		if(source[i] == target)
+		{
+			source[i] = replacement;
+		}
+	}
+}
+
 bool is_substring(char *source, char *sub)
 {
 	int source_len = strlen(source);
@@ -333,7 +344,7 @@ int main(int argc, char *argv[])
 			// NOTE: this is a single if case, not followed by else-if cases, because there is no
 			//       overlap between underline and other cases. The same cannot be said about italic, bold,
 			//       and italic bold, because they use the same character to delimit (*, **, and ***) 
-			if(preprocessing_token_len > 2 && is_substring(split[split_index], "++"))
+			if(preprocessing_token_len > 2 && (building_code_block != true) && is_substring(split[split_index], "++"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an underline section.\n", split[split_index]);
 				while(j < preprocessing_token_len - 1)
@@ -425,7 +436,7 @@ int main(int argc, char *argv[])
 			}
 
 
-			// case: italic bold
+			// case: italic bold (asterisks)
 			if(preprocessing_token_len > 3 && (single_line_code_initiated != true) && is_substring(split[split_index], "***"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic bold section.\n", split[split_index]);
@@ -462,7 +473,7 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			// case: bold
+			// case: bold (asterisks)
 			else if(preprocessing_token_len > 2 && (single_line_code_initiated != true) && is_substring(split[split_index], "**"))
 			{
 				printf("DEBUG: found token \"%s\" to be part of a bold section.\n", split[split_index]);
@@ -492,7 +503,7 @@ int main(int argc, char *argv[])
 				}
 			}
 
-			// case: italic
+			// case: italic (asterisks)
 			else if(preprocessing_token_len > 1 && (single_line_code_initiated != true) && string_contains_char(split[split_index], '*'))
 			{
 				printf("DEBUG: found token \"%s\" to be part of an italic section.\n", split[split_index]);
@@ -503,13 +514,28 @@ int main(int argc, char *argv[])
 					{
 						MODIFY_FLAG = true;
 						italic_initiated = flip_boolean(italic_initiated);
-						
+							
 						if(italic_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<i>");
 						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</i>");
 					}
 					else
 					{
-						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						// if you encounter \\ it is possible that the next char will be *. We do not want to accidentally enter the case where we process
+						// the * as a <i> tag. So, just increment AGAIN. We also do not want to actually insert the \\ character though, otherwise it will
+						// still appear in the HTML, and we will get ugly things.
+						if(split[split_index][j] == '\\')
+						{
+							j++;
+							if(j < preprocessing_token_len)
+							{
+								MODIFY_FLAG = true;
+								insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+							}
+						}
+						else
+						{
+							insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						}
 					}
 					j++;
 				}
@@ -521,7 +547,121 @@ int main(int argc, char *argv[])
 			else
 			{ 
 			}
-			
+
+
+			// case: italic bold (underscores)
+			if(preprocessing_token_len > 3 && (single_line_code_initiated != true) && is_substring(split[split_index], "___"))
+			{
+				printf("DEBUG: found token \"%s\" to be part of an italic bold section, delimited by UNDERSCORES.\n", split[split_index]);
+				// the idea is to copy character by character until we reach the delimiter. If we reach the delimiter,
+				// then do not copy the character. Instead, copy <b><i> or </i></b> depending on whether we have already
+				// opened a <b><i> tag-pair. This is indicated by the italic_bold_initiated variable. Then, skip ahead
+				// 3 characters so that we skip the first, second, and third asterisk.
+				while(j < preprocessing_token_len - 2)
+				{
+					if(split[split_index][j] == '_' && split[split_index][j+1] == '_' && split[split_index][j+2] == '_')
+					{
+						MODIFY_FLAG = true;
+						italic_bold_initiated= flip_boolean(italic_bold_initiated);
+
+						if(italic_bold_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<b><i>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</i></b>");
+
+						j += 3;
+					}
+					else
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						j++;
+					}
+				}
+				// get whatever characters were missed
+				if(j < preprocessing_token_len)
+				{
+					while(j < preprocessing_token_len)
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						j++;
+					}
+				}
+			}
+
+			// case: bold (underscores)
+			else if(preprocessing_token_len > 2 && (single_line_code_initiated != true) && is_substring(split[split_index], "__"))
+			{
+				printf("DEBUG: found token \"%s\" to be part of a bold section.\n", split[split_index]);
+				while(j < preprocessing_token_len - 1)
+				{
+					if(split[split_index][j] == '_' && split[split_index][j+1] == '_')
+					{
+						MODIFY_FLAG = true;
+						bold_initiated = flip_boolean(bold_initiated);
+
+						if(bold_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<b>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</b>");
+
+						j += 2;
+
+					}
+					else
+					{
+						insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						j++;
+					}
+				}
+				// get whatever characters were missed
+				if(j < preprocessing_token_len && split[split_index][preprocessing_token_len - 1] != '_')
+				{
+					insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][preprocessing_token_len - 1]);
+				}
+			}
+
+			// case: italic (underscores)
+			else if(preprocessing_token_len > 1 && (single_line_code_initiated != true) && string_contains_char(split[split_index], '_'))
+			{
+				printf("DEBUG: found token \"%s\" to be part of an italic section.\n", split[split_index]);
+				printf("DEBUG [ITALIC]: value of j is %d and value of preprocessing_token_len is %d\n", j, preprocessing_token_len);
+				while(j < preprocessing_token_len)
+				{
+					if(split[split_index][j] == '_')
+					{
+						MODIFY_FLAG = true;
+						italic_initiated = flip_boolean(italic_initiated);
+							
+						if(italic_initiated) concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "<i>");
+						else concatenate(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, "</i>");
+					}
+					else
+					{
+						// if you encounter \\ it is possible that the next char will be *. We do not want to accidentally enter the case where we process
+						// the _ as a <i> tag. So, just increment AGAIN. We also do not want to actually insert the \\ character though, otherwise it will
+						// still appear in the HTML, and we will get ugly things.
+						if(split[split_index][j] == '\\')
+						{
+							j++;
+							if(j < preprocessing_token_len)
+							{
+								MODIFY_FLAG = true;
+								insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+							}
+						}
+						else
+						{
+							insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, split[split_index][j]);
+						}
+					}
+					j++;
+				}
+				// unlike italic-bold and bold, there is no need to try to get any missing characters. There should not
+				// be characters that were missing.
+			}
+
+			// do nothing
+			else
+			{ 
+			}
+
+
 			if(MODIFY_FLAG)
 			{
 				insert_char(&partially_converted_html, &partially_converted_html_len, &partially_converted_html_capacity, '\0');
@@ -555,7 +695,6 @@ int main(int argc, char *argv[])
 		free(string_tokens[i]);
 		string_tokens[i] = strdup(joined);
 		free(joined);
-
 
 
 		printf("DEBUG: Found line \"%s\" to be %d for call to is_deflist\n", string_tokens[i], is_deflist(string_tokens[i]));
@@ -717,8 +856,25 @@ int main(int argc, char *argv[])
 			// whenever not building a list, just add a simple paragraph <p> tag
 			if( (!building_unordered_list) && (!building_deflist) )
 			{
+				// begin paragraph tag
 				concatenate(&html, &html_len, &html_capacity, "<p>");
-				concatenate(&html, &html_len, &html_capacity, string_tokens[i]);
+
+				// code will use tabs, but HTML requires &emsp; as the character for displaying tabs, 
+				// so insert character by character into html, but if '\t' is encountered, concatenate &emsp; instead
+				if(building_code_block)
+				{
+					for(int temp = 0; temp < strlen(string_tokens[i]); temp++)
+					{
+						if(string_tokens[i][temp] != '\t') insert_char(&html, &html_len, &html_capacity, string_tokens[i][temp]);
+						else concatenate(&html, &html_len, &html_capacity, "&emsp;&emsp;"); // concatenate twice, because only once doesn't add much space
+					}
+				}
+				else // otherwise just insert the whole line-token
+				{
+					concatenate(&html, &html_len, &html_capacity, string_tokens[i]);
+				}
+
+				// close the <p> tag
 				concatenate(&html, &html_len, &html_capacity, "</p>");
 			}
 			else if(building_unordered_list)

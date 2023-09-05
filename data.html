@@ -98,7 +98,7 @@ margin-top: 10px;
 <p>int i = 0; </p>
 <p>if(i < 2) </p>
 <p>{ </p>
-<p>     printf("Cool!\n"); </p>
+<p>&emsp;&emsp;printf("Cool!\n"); </p>
 <p>} </p>
 </code>
 <div class="admonition example">
@@ -121,8 +121,18 @@ margin-top: 10px;
 </dl>
 <p>The third <b>ever</b> commit to this project allows for <i>italic</i>, <b>bold</b>, and <b><i>italic bold text</i></b>. Isn't that pretty cool? <i>I think so.</i> In fact, I would say that <b>many people think it is coool.</b> </p>
 <p>With the new im<b>pro</b>vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens. </p>
+<h1>September 5th, 2023 Improvements </h1>
 <p>You can also have <u>underlined text</u> now. Individu<u>a</u>l characters should work as well. </p>
 <p>You can also apply <mark>highlighting</mark> to text! Highlighting uses the == delimiter </p>
+<p>Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight </p>
+<code>
+<p>if(COMPILER == "sealight") </p>
+<p>{ </p>
+<p>&emsp;&emsp;productivity++; </p>
+<p>} </p>
+</code>
+<p>Originally, if you wrote \_ you would have seen it just like that, but now it will correct the escape characters to just _ . It is the same deal for writing \* as well, which will now appear as just *. </p>
+<p>You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing _italic_ will give you <i>italic</i>, writing __bold__ will give you <b>bold</b>, and writing ___italic bold___ will give you <b><i>italic bold</i></b>. </p>
 
 </body>
 </html>
