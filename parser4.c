@@ -3,17 +3,6 @@
 #include <stdbool.h>
 #include <string.h>
 
-void replace_char(char *source, char target, char replacement)
-{
-	for(int i = 0; i < strlen(source); i++)
-	{
-		if(source[i] == target)
-		{
-			source[i] = replacement;
-		}
-	}
-}
-
 bool is_substring(char *source, char *sub)
 {
 	int source_len = strlen(source);

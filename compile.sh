@@ -1,1 +1,1 @@
-gcc parser3.c -o parser3
+gcc parser4.c -o parser4
