@@ -1,5 +1,3 @@
-# Table of Contents
-
 [toc]
 
 # Introduction
@@ -45,7 +43,7 @@ The third **ever** commit to this project allows for *italic*, **bold**, and ***
 
 With the new im**pro**vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens.
 
-# September 5th, 2023 Improvements
+# September 5th 2023 Improvements
 
 You can also have ++underlined text++ now. Individu++a++l characters should work as well.
 
@@ -62,3 +60,11 @@ if(COMPILER == "sealight")
 Originally, if you wrote \\\_ you would have seen it just like that, but now it will correct the escape characters to just \_ . It is the same deal for writing \\\* as well, which will now appear as just \*.
 
 You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing \_italic\_ will give you _italic_, writing \_\_bold\_\_ will give you __bold__, and writing \_\_\_italic bold\_\_\_ will give you ___italic bold___.
+
+# September 6th 2023 Improvements
+
+If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion.
+
+The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). 
+
+Subheaders will be indented in the table of contents accordingly.
