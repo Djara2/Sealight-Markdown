@@ -333,7 +333,9 @@ int main(int argc, char *argv[])
 	int partially_converted_html_capacity;
 	int j; // used to iterate through the characters of split[split_token] when replacing asterisks with <b> and <i> tags
 	int k; // used to hold the index after which all the content of an <li> element follows
+	int l; // used to insert special HTML characters into HEADER_IDS, for example, to add "%2C" in place of ","
 	int UPPERCASE_INDEX;
+
 
 	// go through all the string_tokens, which are all just individual lines of the file
 	int i = 0;
@@ -771,25 +773,70 @@ int main(int argc, char *argv[])
 			// to replace uppercase letters with lowercase letters. Also, ignore the final character, as
 			// this character is always an annexed space that was not originally there, but is inserted by
 			// the parser
+			l = 0;
 			for(int temp = 0; temp < strlen(substring) - 1; temp++)
 			{
 				UPPERCASE_INDEX = index_of_char(UPPERCASES, substring[temp]);
 				if(substring[temp] == ' ')
 				{
 					insert_char(&html, &html_len, &html_capacity, '-');
-					HEADER_IDS[HEADERS_LEN][temp] = '-';
+					HEADER_IDS[HEADERS_LEN][l] = '-';
+				}
+				else if(substring[temp] == ',')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%2C");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = 'C';
+					l += 2;
+				}
+				else if(substring[temp] == '!')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%21");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = '1';
+					l += 2;
+				}
+				else if(substring[temp] == ':')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%3A");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '3';
+					HEADER_IDS[HEADERS_LEN][l+2] = 'A';
+					l += 2;
+				}
+				else if(substring[temp] == '.')
+				{	
+					concatenate(&html, &html_len, &html_capacity, "%2E");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = 'E';
+					l += 2;
+				}
+				else if(substring[temp] == '?')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%3F");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '3';
+					HEADER_IDS[HEADERS_LEN][l+2] = 'F';
+					l += 2;
 				}
 				else if(UPPERCASE_INDEX != -1)
 				{
 					insert_char(&html, &html_len, &html_capacity, LOWERCASES[UPPERCASE_INDEX]);
-					HEADER_IDS[HEADERS_LEN][temp] = LOWERCASES[UPPERCASE_INDEX];
+					HEADER_IDS[HEADERS_LEN][l] = LOWERCASES[UPPERCASE_INDEX];
 				}
 				else
 				{
 					insert_char(&html, &html_len, &html_capacity, substring[temp]);
-					HEADER_IDS[HEADERS_LEN][temp] = substring[temp];
+					HEADER_IDS[HEADERS_LEN][l] = substring[temp];
 				}
+				l++;
 			}
+			// remember to terminate the string
+			HEADER_IDS[HEADERS_LEN][l] = '\0'; 		
+
 			concatenate(&html, &html_len, &html_capacity, "\">");
 			concatenate(&html, &html_len, &html_capacity, substring);
 
