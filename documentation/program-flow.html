@@ -93,7 +93,7 @@ margin-top: 10px;
 <p>It will explain the procedure that is followed in plain English, so as to provide a more clear understanding, compared to just reading the code and the comments explicitly. As it happens, sometimes the exact intention behind and circumstances for which code was written the way it is written can be lost or otherwise not fully embodied by just the individual statements and comments alone. </p>
 <h1>Function Definitions </h1>
 <p><b>NOTE:</b> for right now, the functions remain defined in the beginning of the program. Later, this may be changed. For the moment, there are no plans to move the functions into a separate libsealightmarkdown.h header file. </p>
-<h2>is\_substring </h2>
+<h2>is_substring </h2>
 <p><code>bool is_substring(char *source, char *sub)</code> returns true if a string (sub) is a substring of another string (source). </p>
 <p><b>What it is used for:</b> to determine if a token (1) is itself italic/bold/bold italic, (2) marks the beginning of a section of italic/bold/bold italic text, or (3) marks the end of a section of italic/bold/bold italic text, it must be determined if a token contains the special delimiters corresponding to italic/bold/bold italic Markdown text. </p>
 <ul>
@@ -104,17 +104,17 @@ margin-top: 10px;
 <p>1. italic bold </p>
 <p>2. bold </p>
 <p>3. italic </p>
-<h2>string\_contains\_char </h2>
-<h2>insert\_char </h2>
+<h2>string_contains_char </h2>
+<h2>insert_char </h2>
 <p><code>void insert_char(char **string_ptr, int *len, int *capacity, char c)</code> inserts a character into a dynamically allocated string at index <code>(*len)</code>. <code>char **string_ptr</code> is the string into which the character will be inserted. It requires the parameters <code>int *len</code> and <code>int *capacity</code> so that it may check if there is enough memory allocated to the string for the character <code>char c</code> to be inserted into it. This function is really just meant to append a character to the end of of a string, or to overwrite a string, starting from whichever value you choose for <code>len</code>. <mark>You should not use this function to insert a character at a particular index</mark>, for that just use <code>string[i] = 'c';</code> </p>
 <h2>concatenate </h2>
 <p><code>void concatenate(char **string_ptr, int *len, int *capacity, char *operand)</code> concatenates the string <code>char *operand</code> to the end of the string <code>(*string_ptr)</code>. It is a version of <code>strcat</code> that will expand the memory automatically. </p>
-<p><b>Note:</b> this function requires [insert\_char](#insert\_char) to be defined, as this function just repeatedly calls <code>insert_char</code>, iterating through the individual characters of <code>operand</code>. </p>
-<h2>split\_string </h2>
+<p><b>Note:</b> this function requires [insert_char](#insert_char) to be defined, as this function just repeatedly calls <code>insert_char</code>, iterating through the individual characters of <code>operand</code>. </p>
+<h2>split_string </h2>
 <p><code>char** split_string(char *source, char *delimiter)</code> returns a NULL-terminated array of strings, where each member of the array is a substring of <code>source</code> until individual instances of <code>delimiter</code> are encountered within <code>source</code>. </p>
 <p><b>Note:</b> because the array returned by the function is NULL-terminated, you have to iterate through it with a while loop. Of course, you can also then use the while loop to determine its length. </p>
 <p>Please remember to free the memory held by the array that the function returns! </p>
-<h2>determine\_header\_level </h2>
+<h2>determine_header_level </h2>
 <p><code>int determine_header_level(char *source)</code> returns an integer corresponding to the amount of times that the '#' character appears concurrently starting from the 0th index in <code>source</code>. </p>
 <p>This function exists just to make the code a little easier to read. Beyond that, it exists to determine if a header tag should be a \<h1> tag or a \<h2> tag </p>
 

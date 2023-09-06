@@ -1,6 +1,6 @@
 # Table of Contents
 
-Some stuff goes here
+[toc]
 
 # Introduction
 

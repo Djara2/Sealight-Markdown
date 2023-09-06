@@ -48,5 +48,7 @@ Please remember to free the memory held by the array that the function returns!
 
 `int determine_header_level(char *source)` returns an integer corresponding to the amount of times that the '#' character appears concurrently starting from the 0th index in `source`. 
 
-This function exists just to make the code a little easier to read. Beyond that, it exists to determine if a header tag should be a \<h1> tag or a \<h2> tag
+This function exists just to make the code a little easier to read. Beyond that, it exists to determine if a header tag should be a h1 or h2 tag.
+
+
 

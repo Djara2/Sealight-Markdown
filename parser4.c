@@ -3,6 +3,23 @@
 #include <stdbool.h>
 #include <string.h>
 
+int index_of_char(char *source, char target)
+{
+	for(int i = 0; i < strlen(source); i++)
+	{
+		if(source[i] == target) return i;
+	}
+	return -1;
+}
+
+void replace_char(char *source, char target, char replacement)
+{
+	for(int i = 0; i < strlen(source); i++)
+	{
+		if(source[i] == target) source[i] = replacement;
+	}
+}
+
 bool is_substring(char *source, char *sub)
 {
 	int source_len = strlen(source);
@@ -261,6 +278,17 @@ int main(int argc, char *argv[])
 	int html_len = 0;
 	int html_capacity = 100;
 	char *html = malloc(sizeof(char) * html_capacity);
+
+	// keep track of headers so that table of contents can be made
+	int HEADERS_LEN = 0;
+	int HEADERS_CAPACITY = 5;
+	char **HEADERS = malloc(sizeof(char*) * HEADERS_CAPACITY);  // used to keep track of all the headers in the file. This is required
+	char **HEADER_IDS = malloc(sizeof(char*) * HEADERS_CAPACITY); // used to keep track of the header IDS so that they do not have to be computed twice.
+																// for the automatic creation of the table of contents
+	int *HEADER_LEVELS = malloc(sizeof(int) * HEADERS_CAPACITY); // parallel array that holds the header level (e.g. level 2 header, so we know how
+	                                                             // many tabs (&emsp;) to insert
+
+	// add the top of the document -- the CSS styling for the admonitions, the main font, etc.
 	concatenate(&html, &html_len, &html_capacity, "<!DOCTYPE html>\n<html>\n"); // top of document
 	concatenate(&html, &html_len, &html_capacity, "<head>\n\t <style>\n\t\tbody {\n\t\t\tfont-family: Minion Pro Display;\n\t\t}\n.admonition {\nbackground-color: #f7f7f7;\nmargin-bottom: 10px;\nposition: relative;\noverflow: hidden;\npadding-left: 12px; /* Added padding to create space between the vertical stripe and the label */\n}\n/* This is the vertical stripe */\n.admonition:before {\ncontent: "";\nposition: absolute;\ntop: 0;\nleft: 0;\nwidth: 6px;\nheight: 100%;\nbackground-color: #ffa500; /* Default vertical stripe color */\n}\n\n/* Add more custom classes and styles for different variants if desired */\n\n.admonition h4 {\nmargin: 0;\npadding: 10px 8px;\nfont-size: 18px;\ncolor: black; /* Adjust the color as needed */\nbackground-color: #f4e7d4; /* Adjust the default header background color as needed */\nborder-radius: 0 4px 4px 0; /* Added border-radius to only round the right side */\nmargin-left: -6px;\nmargin-right: -8px;\n}\n\n.admonition.example h4 {\nbackground-color: #f2edff;\n}\n\n/* format for admonition variants */\n.admonition.example:before {\nbackground-color: #7C4DFF;\n}\n\n.admonition.note h4 {\nbackground-color: #ecf3ff;\n}\n\n.admonition.note:before {\nbackground-color: #448aff;\n}\n\n.admonition.tip h4 {\nbackground-color: #e5f8f6;\n}\n\n.admonition.tip:before {\nbackground-color: #00bfa5;\n}\n.admonition.success h4 {\nbackground-color: green;\n}\n\n.admonition.success:before {\nbackground-color: green;\n}\n\n.admonition.warning h4 {\nbackground-color: ##fff4e5;\n}\n\n.admonition.warning:before {\nbackground-color: #ff9100;\n}\n\n.admonition.danger h4 {\nbackground-color: #ffe7ec;\n}\n\n.admonition.danger:before {\nbackground-color: #ff1744;\n}\n.admonition p {\nmargin-top: 10px;\n}\n</style></head>\n<body>\n");
 
@@ -268,6 +296,7 @@ int main(int argc, char *argv[])
 	int header_level;
 	int code_level;
 	int admonition_level;
+	int substring_len;
 	char *substring;
 	char **split; // used to further split a line into whitespace-delimited tokens. Each token is then analyzed for
 	              // lower order markers, like ** for bold. A "lower order marking" is one that does not effect the whole
@@ -275,6 +304,8 @@ int main(int argc, char *argv[])
 	char *admonition_type;
 	char *partially_converted_html;
 	char *joined;
+	char UPPERCASES[] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	char LOWERCASES[] = "abcdefghijklmnopqrstuvwxyz";
 	bool building_code_block = false;
 	bool building_admonition = false;
 	bool building_unordered_list = false;
@@ -287,6 +318,8 @@ int main(int argc, char *argv[])
 	bool single_line_code_initiated = false;
 	bool MODIFY_FLAG = false; // used to keep track of whether or not a whitespace-delimited token from char *split 
 	                          // was modified to replace markdown with HTML (e.g. replacing ** for <b>)
+	bool TOC_FLAG = false;    // used to determine if the user used [toc] at all. This signals that the document has to be
+	                          // assembled in a special order
 	int lower_bound;
 	int upper_bound;
 	int split_index;
@@ -297,6 +330,7 @@ int main(int argc, char *argv[])
 	int partially_converted_html_capacity;
 	int j; // used to iterate through the characters of split[split_token] when replacing asterisks with <b> and <i> tags
 	int k; // used to hold the index after which all the content of an <li> element follows
+	int UPPERCASE_INDEX;
 
 	// go through all the string_tokens, which are all just individual lines of the file
 	int i = 0;
@@ -723,18 +757,64 @@ int main(int argc, char *argv[])
 			// add header tag 
 			concatenate(&html, &html_len, &html_capacity, "<h");
 			insert_char(&html, &html_len, &html_capacity, header_level + '0');
-			insert_char(&html, &html_len, &html_capacity, '>');
+			concatenate(&html, &html_len, &html_capacity, " id=\"");
 	
 			// add header contents -- this requires the removal of the # characters
 			substring = string_substring(string_tokens[i], header_level+1, strlen(string_tokens[i]));
+			substring_len = strlen(substring);
+			HEADER_IDS[HEADERS_LEN] = malloc(sizeof(char) * substring_len);
+
+			// add the header's label as its id, but make sure to replace spaces with hyphens (-) and 
+			// to replace uppercase letters with lowercase letters. Also, ignore the final character, as
+			// this character is always an annexed space that was not originally there, but is inserted by
+			// the parser
+			for(int temp = 0; temp < strlen(substring) - 1; temp++)
+			{
+				UPPERCASE_INDEX = index_of_char(UPPERCASES, substring[temp]);
+				if(substring[temp] == ' ')
+				{
+					insert_char(&html, &html_len, &html_capacity, '-');
+					HEADER_IDS[HEADERS_LEN][temp] = '-';
+				}
+				else if(UPPERCASE_INDEX != -1)
+				{
+					insert_char(&html, &html_len, &html_capacity, LOWERCASES[UPPERCASE_INDEX]);
+					HEADER_IDS[HEADERS_LEN][temp] = LOWERCASES[UPPERCASE_INDEX];
+				}
+				else
+				{
+					insert_char(&html, &html_len, &html_capacity, substring[temp]);
+					HEADER_IDS[HEADERS_LEN][temp] = substring[temp];
+				}
+			}
+			concatenate(&html, &html_len, &html_capacity, "\">");
 			concatenate(&html, &html_len, &html_capacity, substring);
-			free(substring);
 
 			// end the tag
 			concatenate(&html, &html_len, &html_capacity, "</h");
 			insert_char(&html, &html_len, &html_capacity, header_level + '0');
 			concatenate(&html, &html_len, &html_capacity, ">");
+
+			// add the header to the HEADERS array
+			// add the header level to the HEADER_LEVELS parallel array
+			if(HEADERS_LEN >= HEADERS_CAPACITY)
+			{
+				HEADERS_CAPACITY *= 2;
+				HEADERS = realloc(HEADERS, sizeof(char*) * HEADERS_CAPACITY);
+				if(HEADERS == NULL)
+				{
+					printf("ERROR [HEADERS]: could not allocate more memory to the HEADERS array to keep track of the headers in the document.\n");
+					return 1;
+				}
+			}
+			HEADERS[HEADERS_LEN] = malloc(sizeof(char) * (strlen(substring) + 1));
+			HEADERS[HEADERS_LEN] = strdup(substring);
+			HEADER_LEVELS[HEADERS_LEN] = header_level;
+			HEADERS_LEN++;
+
+			// clean up for next time we have a header
 			header_level = 0;
+			free(substring);
 		}
 
 		// case: code block		
@@ -842,8 +922,14 @@ int main(int argc, char *argv[])
 		// case: paragraph
 		else
 		{
+			// case: table of contents
+			if(strcmp(string_tokens[i], "[toc] ") == 0)
+			{
+				TOC_FLAG = true;
+			}
+
 			// whenever not building a list, just add a simple paragraph <p> tag
-			if( (!building_unordered_list) && (!building_deflist) )
+			else if( (!building_unordered_list) && (!building_deflist) )
 			{
 				// begin paragraph tag
 				concatenate(&html, &html_len, &html_capacity, "<p>");
@@ -900,6 +986,38 @@ int main(int argc, char *argv[])
 	concatenate(&html, &html_len, &html_capacity, "\n</body>\n</html>");
 	insert_char(&html, &html_len, &html_capacity, '\0');
 	printf("len %d capacity %d\n", html_len, html_capacity);
+
+	// print out the table of contents first, if it was in the document
+	if(TOC_FLAG) 
+	{
+		printf("HEADERS_LEN: %d , HEADERS_CAPACITY: %d\n", HEADERS_LEN, HEADERS_CAPACITY);
+		for(int x = 0; x < HEADERS_LEN; x++)
+		{
+			if(HEADER_LEVELS[x] > 1)
+			{
+				for(int y = 1; y < HEADER_LEVELS[x]; y++)
+					printf("&emsp;&emsp;");
+			}
+			printf("<a href=\"#");
+			printf("%s", HEADER_IDS[x]);
+			printf("\">%s", HEADERS[x]);
+			printf("</a>\n");
+			free(HEADERS[x]);
+		}
+		free(HEADERS);
+		free(HEADER_LEVELS);
+	}
+	else // the memory was still used to hold the headers regardless if they are going to be printed, so free that memory
+	{
+		for(int x = 0; x < HEADERS_LEN; x++)
+		{
+			free(HEADERS[x]);
+		}
+		free(HEADERS);
+		free(HEADER_LEVELS);
+	}
+
+	// then print out the HTML
 	printf("%s", html);
 
 
