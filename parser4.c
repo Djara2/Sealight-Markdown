@@ -808,7 +808,7 @@ int main(int argc, char *argv[])
 				}
 				else if(substring[temp] == ')')
 				{
-					concatenate(&html, &html_len, &html_capacity, "%29")
+					concatenate(&html, &html_len, &html_capacity, "%29");
 					HEADER_IDS[HEADERS_LEN][l] = '%';
 					HEADER_IDS[HEADERS_LEN][l+1] = '2';
 					HEADER_IDS[HEADERS_LEN][l+2] = '9';
@@ -868,6 +868,9 @@ int main(int argc, char *argv[])
 			concatenate(&html, &html_len, &html_capacity, "</h");
 			insert_char(&html, &html_len, &html_capacity, header_level + '0');
 			concatenate(&html, &html_len, &html_capacity, ">");
+			
+			// --- also add a horizontal rule for styling, but only if it is an h1 tag
+			if(header_level == 1) concatenate(&html, &html_len, &html_capacity, "\n<hr>");
 
 			// add the header to the HEADERS array
 			// add the header level to the HEADER_LEVELS parallel array
