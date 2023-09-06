@@ -1009,15 +1009,18 @@ int main(int argc, char *argv[])
 			printf("\">%s", HEADERS[x]);
 			printf("</a></p>\n");
 			free(HEADERS[x]);
+			free(HEADER_IDS[x]);
 		}
 		free(HEADERS);
 		free(HEADER_LEVELS);
+		free(HEADER_IDS);
 	}
 	else // the memory was still used to hold the headers regardless if they are going to be printed, so free that memory
 	{
 		for(int x = 0; x < HEADERS_LEN; x++)
 		{
 			free(HEADERS[x]);
+			free(HEADER_IDS[x]);
 		}
 		free(HEADERS);
 		free(HEADER_LEVELS);
