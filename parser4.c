@@ -1074,7 +1074,7 @@ int main(int argc, char *argv[])
 	// print out the table of contents first, if it was in the document
 	if(TOC_FLAG) 
 	{
-		printf("<h1>Table of Contents</h1>\n\n");
+		printf("<h1>Table of Contents</h1>\n\n<hr>\n\n");
 		for(int x = 0; x < HEADERS_LEN; x++)
 		{
 			printf("<p>");
