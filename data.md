@@ -68,3 +68,5 @@ If you write [toc] as the first line of the file, then a table of contents will 
 The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). 
 
 Subheaders will be indented in the table of contents accordingly.
+
+Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links.

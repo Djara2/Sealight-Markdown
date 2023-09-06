@@ -790,6 +790,30 @@ int main(int argc, char *argv[])
 					HEADER_IDS[HEADERS_LEN][l+2] = 'C';
 					l += 2;
 				}
+				else if(substring[temp] == '-')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%2D");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = 'D';
+					l += 2;
+				}
+				else if(substring[temp] == '(')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%28");
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = '8';
+					l += 2;
+				}
+				else if(substring[temp] == ')')
+				{
+					concatenate(&html, &html_len, &html_capacity, "%29")
+					HEADER_IDS[HEADERS_LEN][l] = '%';
+					HEADER_IDS[HEADERS_LEN][l+1] = '2';
+					HEADER_IDS[HEADERS_LEN][l+2] = '9';
+					l += 2;
+				}
 				else if(substring[temp] == '!')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%21");
@@ -962,7 +986,12 @@ int main(int argc, char *argv[])
 				concatenate(&html, &html_len, &html_capacity, "<dl>");
 				concatenate(&html, &html_len, &html_capacity, "\n\t<dt>");
 				substring = string_substring(string_tokens[i], 2, strlen(string_tokens[i]));
+
+				// add underline and bolding so the term sticks out
+				concatenate(&html, &html_len, &html_capacity, "<u><b>");
 				concatenate(&html, &html_len, &html_capacity, substring);
+				concatenate(&html, &html_len, &html_capacity, "</b></u>");
+
 				free(substring);
 				concatenate(&html, &html_len, &html_capacity, "</dt>");
 			}
