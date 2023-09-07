@@ -283,7 +283,11 @@ int main(int argc, char *argv[])
 	int HEADERS_LEN = 0;
 	int HEADERS_CAPACITY = 5;
 	char **HEADERS = malloc(sizeof(char*) * HEADERS_CAPACITY);  // used to keep track of all the headers in the file. This is required
+	char **new_headers; // used for realloc
 	char **HEADER_IDS = malloc(sizeof(char*) * HEADERS_CAPACITY); // used to keep track of the header IDS so that they do not have to be computed twice.
+	int HEADER_ID_LEN;
+	int HEADER_ID_CAPACITY;
+	char *HEADER_ID;
 																// for the automatic creation of the table of contents
 	int *HEADER_LEVELS = malloc(sizeof(int) * HEADERS_CAPACITY); // parallel array that holds the header level (e.g. level 2 header, so we know how
 	                                                             // many tabs (&emsp;) to insert
@@ -333,7 +337,6 @@ int main(int argc, char *argv[])
 	int partially_converted_html_capacity;
 	int j; // used to iterate through the characters of split[split_token] when replacing asterisks with <b> and <i> tags
 	int k; // used to hold the index after which all the content of an <li> element follows
-	int l; // used to insert special HTML characters into HEADER_IDS, for example, to add "%2C" in place of ","
 	int UPPERCASE_INDEX;
 
 
@@ -767,99 +770,122 @@ int main(int argc, char *argv[])
 			// add header contents -- this requires the removal of the # characters
 			substring = string_substring(string_tokens[i], header_level+1, strlen(string_tokens[i]));
 			substring_len = strlen(substring);
-			HEADER_IDS[HEADERS_LEN] = malloc(sizeof(char) * substring_len);
+
+			// --- it is a guessing game how many extra characters will be needed after special HTML characters
+			//     are inserted (e.g. you need 2 extra chars to insert "%2C" whenever you come across a comma
+			HEADER_ID_LEN = 0;
+			HEADER_ID_CAPACITY = substring_len + 10;
+			HEADER_ID = malloc(sizeof(char) * HEADER_ID_CAPACITY); 
+
+			printf("HEADER_ID_LEN: %d, HEADER_ID_CAPACITY: %d\n", HEADER_ID_LEN, HEADER_ID_CAPACITY);
 
 			// add the header's label as its id, but make sure to replace spaces with hyphens (-) and 
 			// to replace uppercase letters with lowercase letters. Also, ignore the final character, as
 			// this character is always an annexed space that was not originally there, but is inserted by
 			// the parser
-			l = 0;
-			for(int temp = 0; temp < strlen(substring) - 1; temp++)
+			for(int temp = 0; temp < substring_len - 1; temp++)
 			{
 				UPPERCASE_INDEX = index_of_char(UPPERCASES, substring[temp]);
 				if(substring[temp] == ' ')
 				{
 					insert_char(&html, &html_len, &html_capacity, '-');
-					HEADER_IDS[HEADERS_LEN][l] = '-';
+					insert_char(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, '-');
 				}
 				else if(substring[temp] == ',')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%2C");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = 'C';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%2C");
 				}
 				else if(substring[temp] == '-')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%2D");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = 'D';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%2D");
 				}
 				else if(substring[temp] == '(')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%28");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = '8';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%28");
 				}
 				else if(substring[temp] == ')')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%29");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = '9';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%29");
 				}
 				else if(substring[temp] == '!')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%21");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = '1';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%21");
 				}
 				else if(substring[temp] == ':')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%3A");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '3';
-					HEADER_IDS[HEADERS_LEN][l+2] = 'A';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%3A");
 				}
 				else if(substring[temp] == '.')
 				{	
 					concatenate(&html, &html_len, &html_capacity, "%2E");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '2';
-					HEADER_IDS[HEADERS_LEN][l+2] = 'E';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%2E");
 				}
 				else if(substring[temp] == '?')
 				{
 					concatenate(&html, &html_len, &html_capacity, "%3F");
-					HEADER_IDS[HEADERS_LEN][l] = '%';
-					HEADER_IDS[HEADERS_LEN][l+1] = '3';
-					HEADER_IDS[HEADERS_LEN][l+2] = 'F';
-					l += 2;
+					concatenate(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, "%3F");
 				}
 				else if(UPPERCASE_INDEX != -1)
 				{
 					insert_char(&html, &html_len, &html_capacity, LOWERCASES[UPPERCASE_INDEX]);
-					HEADER_IDS[HEADERS_LEN][l] = LOWERCASES[UPPERCASE_INDEX];
+					insert_char(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, LOWERCASES[UPPERCASE_INDEX]);
 				}
 				else
 				{
 					insert_char(&html, &html_len, &html_capacity, substring[temp]);
-					HEADER_IDS[HEADERS_LEN][l] = substring[temp];
+					insert_char(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, substring[temp]);
 				}
-				l++;
 			}
 			// remember to terminate the string
-			HEADER_IDS[HEADERS_LEN][l] = '\0'; 		
+			insert_char(&HEADER_ID, &HEADER_ID_LEN, &HEADER_ID_CAPACITY, '\0');
+			
+			// assign HEADER_ID to HEADER_IDS[HEADER_LEN] so it is kept track of
+			printf("HEADER_ID: \"%s\"\n", HEADER_ID);
+			printf("HEADER_ID_LEN: %d, HEADER_ID_CAPACITY: %d\n", HEADER_ID_LEN, HEADER_ID_CAPACITY);
+			printf("HEADERS_LEN is %d\n", HEADERS_LEN);
+
+			// ensure there is sufficient space for us to add stuff
+			if(HEADERS_LEN >= HEADERS_CAPACITY)
+			{
+				HEADERS_CAPACITY *= 2;
+				printf("ATTEMPTING REALLOC\n");
+				HEADERS = realloc(HEADERS, sizeof(char*) * HEADERS_CAPACITY);
+				HEADER_IDS = realloc(HEADER_IDS, sizeof(char*) * HEADERS_CAPACITY);
+				HEADER_LEVELS = realloc(HEADER_LEVELS, sizeof(int) * HEADERS_CAPACITY);
+				printf("REALLOC PASSED\n");
+				if(HEADERS == NULL)
+				{
+					printf("ERROR [HEADERS]: could not allocate more memory to the HEADERS array to keep track of the headers in the document.\n");
+					return 1;
+				}
+				if(HEADER_IDS == NULL)
+				{
+					printf("ERROR [HEADERS]: could not allocate more memory to the HEADERS_IDS array to keep track of the headers in the document.\n");
+					return 1;
+				}
+				if(HEADER_LEVELS == NULL)
+				{
+					printf("ERROR [HEADERS]: could not allocate more memory to the HEADERS_LEVELS array to keep track of the headers in the document.\n");
+					return 1;
+				}
+
+			}
+
+			// add the header id to the HEADER_IDS array
+			HEADER_IDS[HEADERS_LEN] = malloc(sizeof(char) * (strlen(HEADER_ID) + 1));
+			printf("malloc pass 1\n");
+			HEADER_IDS[HEADERS_LEN] = strdup(HEADER_ID);
+			printf("strdup pass\n");
+
+			printf("HEADER_IDS[HEADERS_LEN]: \"%s\"\n", HEADER_IDS[HEADERS_LEN]);
+			// make sure to free the memory that was being used
+			free(HEADER_ID); 
 
 			concatenate(&html, &html_len, &html_capacity, "\">");
 			concatenate(&html, &html_len, &html_capacity, substring);
@@ -874,16 +900,6 @@ int main(int argc, char *argv[])
 
 			// add the header to the HEADERS array
 			// add the header level to the HEADER_LEVELS parallel array
-			if(HEADERS_LEN >= HEADERS_CAPACITY)
-			{
-				HEADERS_CAPACITY *= 2;
-				HEADERS = realloc(HEADERS, sizeof(char*) * HEADERS_CAPACITY);
-				if(HEADERS == NULL)
-				{
-					printf("ERROR [HEADERS]: could not allocate more memory to the HEADERS array to keep track of the headers in the document.\n");
-					return 1;
-				}
-			}
 			HEADERS[HEADERS_LEN] = malloc(sizeof(char) * (strlen(substring) + 1));
 			HEADERS[HEADERS_LEN] = strdup(substring);
 			HEADER_LEVELS[HEADERS_LEN] = header_level;
@@ -1008,6 +1024,12 @@ int main(int argc, char *argv[])
 			if(strcmp(string_tokens[i], "[toc] ") == 0)
 			{
 				TOC_FLAG = true;
+			}
+
+			// case: horizontal rule
+			else if(strcmp(string_tokens[i], "--- ") == 0)
+			{
+				concatenate(&html, &html_len, &html_capacity, "<hr>");
 			}
 
 			// whenever not building a list, just add a simple paragraph <p> tag

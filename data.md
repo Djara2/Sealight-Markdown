@@ -70,3 +70,13 @@ The listings in the table of contents will also be clickable links that will tak
 Subheaders will be indented in the table of contents accordingly.
 
 Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links.
+
+h1 headers will be followed by a horizontal rule
+
+Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents)
+
+Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule.
+
+---
+
+The document now has a small margin on the left and right. This improves readability. 

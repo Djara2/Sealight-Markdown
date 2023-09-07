@@ -40,3 +40,23 @@ int main(void)
 
 You end an admonition by writing !!! followed by a newline.
 ```
+
+## Automatic Generation of Table of Contents
+
+All you have to do is write `[toc]` at the top of the file, and your output HTML will have a table of contents with clickable links to navigate throughout the document
+
+```md
+[toc]
+
+# Introduction
+
+The rendered HTML will have links to the Introduction, Purpose, and Conclusion sections of this document.
+
+# Purpose
+
+To save time of course!
+
+# Conclusion
+
+I am passionate about Markdown and this project.
+```
