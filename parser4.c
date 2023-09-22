@@ -198,6 +198,20 @@ bool is_deflist(char *source)
 	return true;
 }
 
+bool is_single_line_quote(char *source)
+{
+	int len = strlen(source);
+
+	// case: insufficient length
+	if(len < 3) return false;
+	
+	if(source[0] != '>') return false;
+
+	if(source[1] != ' ') return false;
+
+	return true;
+}
+
 char* string_substring(char *source, int inclusive_start, int exclusive_end)
 {
 	int required_chars = (exclusive_end - inclusive_start) + 1;
@@ -229,13 +243,39 @@ int first_index_of(char *source, char c)
 
 int main(int argc, char *argv[])
 {
-	if(argc < 2) return 1;
+	// argc[1] -> source file (markdown)
+	// argc[2] -> name of the file you want in html
+	//            - if you call it "same" or ".", it will take on the same name
+	//              as source, just with .html extension
+	if(argc < 3) return 1;
 
 	FILE *source = fopen(argv[1], "r");
 	if(source == NULL) 
 	{
 		printf("Could not open file \"%s\". Does it exist?\n", argv[1]);
 		return 1;
+	}
+
+	// create file handle for output
+	FILE *output;
+	if( (strcmp(argv[2], "same") == 0) || (strcmp(argv[2], ".") == 0) )
+	{
+		int *source_file_name_len = malloc(sizeof(int));
+		(*source_file_name_len) = strlen(argv[1]);
+
+		char *output_name = malloc(sizeof(char) * ( (*source_file_name_len) + 3));
+		for(int i = 0; i <= ( (*source_file_name_len) - 3); i++)
+		{
+			output_name[i] = argv[1][i];
+		}
+		strcat(output_name, "html");
+		output = fopen(output_name, "w");
+		free(source_file_name_len);
+		free(output_name);
+	}
+	else
+	{
+		output = fopen(argv[2], "w");
 	}
 
 	// get all contents of the file
@@ -337,6 +377,7 @@ int main(int argc, char *argv[])
 	int partially_converted_html_capacity;
 	int j; // used to iterate through the characters of split[split_token] when replacing asterisks with <b> and <i> tags
 	int k; // used to hold the index after which all the content of an <li> element follows
+	int list_level_change;
 	int UPPERCASE_INDEX;
 
 
@@ -1017,6 +1058,16 @@ int main(int argc, char *argv[])
 			else concatenate(&html, &html_len, &html_capacity, "</dl>");
 		}
 
+		// case: single-line quote
+		else if(is_single_line_quote(string_tokens[i]))
+		{
+			concatenate(&html, &html_len, &html_capacity, "<blockquote>");
+			substring = string_substring(string_tokens[i], 2, strlen(string_tokens[i]));
+			concatenate(&html, &html_len, &html_capacity, substring);
+			concatenate(&html, &html_len, &html_capacity, "</blockquote>");
+			free(substring);
+		}
+
 		// case: paragraph
 		else
 		{
@@ -1096,19 +1147,19 @@ int main(int argc, char *argv[])
 	// print out the table of contents first, if it was in the document
 	if(TOC_FLAG) 
 	{
-		printf("<h1>Table of Contents</h1>\n\n<hr>\n\n");
+		fprintf(output, "<h1>Table of Contents</h1>\n\n<hr>\n\n");
 		for(int x = 0; x < HEADERS_LEN; x++)
 		{
-			printf("<p>");
+			fprintf(output, "<p>");
 			if(HEADER_LEVELS[x] > 1)
 			{
 				for(int y = 1; y < HEADER_LEVELS[x]; y++)
-					printf("&emsp;&emsp;");
+					fprintf(output, "&emsp;&emsp;");
 			}
-			printf("<a href=\"#");
-			printf("%s", HEADER_IDS[x]);
-			printf("\">%s", HEADERS[x]);
-			printf("</a></p>\n");
+			fprintf(output, "<a href=\"#");
+			fprintf(output, "%s", HEADER_IDS[x]);
+			fprintf(output, "\">%s", HEADERS[x]);
+			fprintf(output, "</a></p>\n");
 			free(HEADERS[x]);
 			free(HEADER_IDS[x]);
 		}
@@ -1128,8 +1179,9 @@ int main(int argc, char *argv[])
 	}
 
 	// then print out the HTML
-	printf("%s", html);
-
+	//printf("%s", html); 
+	fprintf(output, "%s", html);
+	
 
 
 	// cleanup
@@ -1138,5 +1190,7 @@ int main(int argc, char *argv[])
 	
 	free(string_tokens);
 	free(html);
+	fclose(source);
+	fclose(output);
 	return 0;	
 }

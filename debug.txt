@@ -1,0 +1,940 @@
+File contents (delimited by newlines):
+
+line 0: [toc]
+line 1: # Introduction
+line 2: This is my introduction. I hope it is good.
+line 3: ## Sub header
+line 4: Let's see if it can work on subheaders well.
+line 5: ```
+line 6: int i = 0;
+line 7: if(i < 2)
+line 8: {
+line 9: 	printf("Cool!\n");
+line 10: }
+line 11: ```
+line 12: !!! example Admonition time 
+line 13: if you give a mouse a cookie
+line 14: then that is pretty cool
+line 15: I support that fully.
+line 16: !!!
+line 17: !!! tip Admonition after another admonition
+line 18: This is a fun project.
+line 19: !!!
+line 20: # New Header
+line 21: The beginning of a **new** idea
+line 22: regular text
+line 23: _ deflist
+line 24: a deflist is a way of doing definitions for terms
+line 25: In Sealight Markdown, a deflist is delimited by "\_ "
+line 26: _
+line 27: The third **ever** commit to this project allows for *italic*, **bold**, and ***italic bold text***. Isn't that pretty cool? *I think so.* In fact, I would say that **many people think it is coool.**
+line 28: With the new im**pro**vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens.
+line 29: # September 5th, 2023 Improvements
+line 30: You can also have ++underlined text++ now. Individu++a++l characters should work as well.
+line 31: You can also apply ==highlighting== to text! Highlighting uses the == delimiter 
+line 32: Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight
+line 33: ```
+line 34: if(COMPILER == "sealight")
+line 35: {
+line 36: 	productivity++;
+line 37: }
+line 38: ```
+line 39: Originally, if you wrote \\\_ you would have seen it just like that, but now it will correct the escape characters to just \_ . It is the same deal for writing \\\* as well, which will now appear as just \*.
+line 40: You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing \_italic\_ will give you _italic_, writing \_\_bold\_\_ will give you __bold__, and writing \_\_\_italic bold\_\_\_ will give you ___italic bold___.
+line 41: # September 6th, 2023 Improvements
+line 42: If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion.
+line 43: The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). 
+line 44: Subheaders will be indented in the table of contents accordingly.
+line 45: Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links.
+line 46: h1 headers will be followed by a horizontal rule
+line 47: Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents)
+line 48: Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule.
+line 49: ---
+line 50: The document now has a small margin on the left and right. This improves readability. 
+On line-token "[toc]"
+On sub-token "[toc]"
+len of "[toc] " is 6
+DEBUG: Found line "[toc] " to be 0 for call to is_deflist
+len of "[toc] " is 6
+On line-token "# Introduction"
+On sub-token "#"
+On sub-token "Introduction"
+len of "# Introduction " is 15
+DEBUG: Found line "# Introduction " to be 0 for call to is_deflist
+Header level found to be 1 for line "# Introduction "
+HEADER_ID_LEN: 0, HEADER_ID_CAPACITY: 23
+HEADER_ID: "introduction"
+HEADER_ID_LEN: 13, HEADER_ID_CAPACITY: 23
+HEADERS_LEN is 0
+malloc pass 1
+strdup pass
+HEADER_IDS[HEADERS_LEN]: "introduction"
+On line-token "This is my introduction. I hope it is good."
+On sub-token "This"
+On sub-token "is"
+On sub-token "my"
+On sub-token "introduction."
+On sub-token "I"
+On sub-token "hope"
+On sub-token "it"
+On sub-token "is"
+On sub-token "good."
+len of "This is my introduction. I hope it is good. " is 44
+DEBUG: Found line "This is my introduction. I hope it is good. " to be 0 for call to is_deflist
+len of "This is my introduction. I hope it is good. " is 44
+On line-token "## Sub header"
+On sub-token "##"
+On sub-token "Sub"
+On sub-token "header"
+len of "## Sub header " is 14
+DEBUG: Found line "## Sub header " to be 0 for call to is_deflist
+Header level found to be 2 for line "## Sub header "
+HEADER_ID_LEN: 0, HEADER_ID_CAPACITY: 21
+HEADER_ID: "sub-header"
+HEADER_ID_LEN: 11, HEADER_ID_CAPACITY: 21
+HEADERS_LEN is 1
+malloc pass 1
+strdup pass
+HEADER_IDS[HEADERS_LEN]: "sub-header"
+On line-token "Let's see if it can work on subheaders well."
+On sub-token "Let's"
+On sub-token "see"
+On sub-token "if"
+On sub-token "it"
+On sub-token "can"
+On sub-token "work"
+On sub-token "on"
+On sub-token "subheaders"
+On sub-token "well."
+len of "Let's see if it can work on subheaders well. " is 45
+DEBUG: Found line "Let's see if it can work on subheaders well. " to be 0 for call to is_deflist
+len of "Let's see if it can work on subheaders well. " is 45
+On line-token "```"
+On sub-token "```"
+len of "``` " is 4
+DEBUG: Found line "``` " to be 0 for call to is_deflist
+Determined line "``` " to be a code block delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+On line-token "int i = 0;"
+On sub-token "int"
+On sub-token "i"
+On sub-token "="
+On sub-token "0;"
+len of "int i = 0; " is 11
+DEBUG: Found line "int i = 0; " to be 0 for call to is_deflist
+len of "int i = 0; " is 11
+On line-token "if(i < 2)"
+On sub-token "if(i"
+On sub-token "<"
+On sub-token "2)"
+len of "if(i < 2) " is 10
+DEBUG: Found line "if(i < 2) " to be 0 for call to is_deflist
+len of "if(i < 2) " is 10
+On line-token "{"
+On sub-token "{"
+len of "{ " is 2
+DEBUG: Found line "{ " to be 0 for call to is_deflist
+len of "{ " is 2
+On line-token "	printf("Cool!\n");"
+On sub-token "	printf("Cool!\n");"
+len of "	printf("Cool!\n"); " is 20
+DEBUG: Found line "	printf("Cool!\n"); " to be 0 for call to is_deflist
+len of "	printf("Cool!\n"); " is 20
+On line-token "}"
+On sub-token "}"
+len of "} " is 2
+DEBUG: Found line "} " to be 0 for call to is_deflist
+len of "} " is 2
+On line-token "```"
+On sub-token "```"
+len of "``` " is 4
+DEBUG: Found line "``` " to be 0 for call to is_deflist
+Determined line "``` " to be a code block delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+On line-token "!!! example Admonition time "
+On sub-token "!!!"
+On sub-token "example"
+On sub-token "Admonition"
+On sub-token "time"
+len of "!!! example Admonition time " is 28
+DEBUG: Found line "!!! example Admonition time " to be 0 for call to is_deflist
+DEBUG: Determined line "!!! example Admonition time " to be an admonition delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+!!! example Admonition time 
+DEBUG: string_tokens[i] after split to get admonition type: "!!! example Admonition time "
+DEBUG: found lower bound = 11 and upper bound = 28 for line "!!! example Admonition time "
+On line-token "if you give a mouse a cookie"
+On sub-token "if"
+On sub-token "you"
+On sub-token "give"
+On sub-token "a"
+On sub-token "mouse"
+On sub-token "a"
+On sub-token "cookie"
+len of "if you give a mouse a cookie " is 29
+DEBUG: Found line "if you give a mouse a cookie " to be 0 for call to is_deflist
+len of "if you give a mouse a cookie " is 29
+On line-token "then that is pretty cool"
+On sub-token "then"
+On sub-token "that"
+On sub-token "is"
+On sub-token "pretty"
+On sub-token "cool"
+len of "then that is pretty cool " is 25
+DEBUG: Found line "then that is pretty cool " to be 0 for call to is_deflist
+len of "then that is pretty cool " is 25
+On line-token "I support that fully."
+On sub-token "I"
+On sub-token "support"
+On sub-token "that"
+On sub-token "fully."
+len of "I support that fully. " is 22
+DEBUG: Found line "I support that fully. " to be 0 for call to is_deflist
+len of "I support that fully. " is 22
+On line-token "!!!"
+On sub-token "!!!"
+len of "!!! " is 4
+DEBUG: Found line "!!! " to be 0 for call to is_deflist
+DEBUG: Determined line "!!! " to be an admonition delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+!!! 
+DEBUG: string_tokens[i] after split to get admonition type: "!!! "
+On line-token "!!! tip Admonition after another admonition"
+On sub-token "!!!"
+On sub-token "tip"
+On sub-token "Admonition"
+On sub-token "after"
+On sub-token "another"
+On sub-token "admonition"
+len of "!!! tip Admonition after another admonition " is 44
+DEBUG: Found line "!!! tip Admonition after another admonition " to be 0 for call to is_deflist
+DEBUG: Determined line "!!! tip Admonition after another admonition " to be an admonition delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+!!! tip Admonition after another admonition 
+DEBUG: string_tokens[i] after split to get admonition type: "!!! tip Admonition after another admonition "
+DEBUG: found lower bound = 7 and upper bound = 44 for line "!!! tip Admonition after another admonition "
+On line-token "This is a fun project."
+On sub-token "This"
+On sub-token "is"
+On sub-token "a"
+On sub-token "fun"
+On sub-token "project."
+len of "This is a fun project. " is 23
+DEBUG: Found line "This is a fun project. " to be 0 for call to is_deflist
+len of "This is a fun project. " is 23
+On line-token "!!!"
+On sub-token "!!!"
+len of "!!! " is 4
+DEBUG: Found line "!!! " to be 0 for call to is_deflist
+DEBUG: Determined line "!!! " to be an admonition delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+!!! 
+DEBUG: string_tokens[i] after split to get admonition type: "!!! "
+On line-token "# New Header"
+On sub-token "#"
+On sub-token "New"
+On sub-token "Header"
+len of "# New Header " is 13
+DEBUG: Found line "# New Header " to be 0 for call to is_deflist
+Header level found to be 1 for line "# New Header "
+HEADER_ID_LEN: 0, HEADER_ID_CAPACITY: 21
+HEADER_ID: "new-header"
+HEADER_ID_LEN: 11, HEADER_ID_CAPACITY: 21
+HEADERS_LEN is 2
+malloc pass 1
+strdup pass
+HEADER_IDS[HEADERS_LEN]: "new-header"
+On line-token "The beginning of a **new** idea"
+On sub-token "The"
+On sub-token "beginning"
+On sub-token "of"
+On sub-token "a"
+On sub-token "**new**"
+DEBUG: found token "**new**" to be part of a bold section.
+On sub-token "idea"
+len of "The beginning of a <b>new</b> idea " is 35
+DEBUG: Found line "The beginning of a <b>new</b> idea " to be 0 for call to is_deflist
+len of "The beginning of a <b>new</b> idea " is 35
+On line-token "regular text"
+On sub-token "regular"
+On sub-token "text"
+len of "regular text " is 13
+DEBUG: Found line "regular text " to be 0 for call to is_deflist
+len of "regular text " is 13
+On line-token "_ deflist"
+On sub-token "_"
+On sub-token "deflist"
+len of "_ deflist " is 10
+DEBUG: Found line "_ deflist " to be 1 for call to is_deflist
+len of "_ deflist " is 10
+On line-token "a deflist is a way of doing definitions for terms"
+On sub-token "a"
+On sub-token "deflist"
+On sub-token "is"
+On sub-token "a"
+On sub-token "way"
+On sub-token "of"
+On sub-token "doing"
+On sub-token "definitions"
+On sub-token "for"
+On sub-token "terms"
+len of "a deflist is a way of doing definitions for terms " is 50
+DEBUG: Found line "a deflist is a way of doing definitions for terms " to be 0 for call to is_deflist
+len of "a deflist is a way of doing definitions for terms " is 50
+On line-token "In Sealight Markdown, a deflist is delimited by "\_ ""
+On sub-token "In"
+On sub-token "Sealight"
+On sub-token "Markdown,"
+On sub-token "a"
+On sub-token "deflist"
+On sub-token "is"
+On sub-token "delimited"
+On sub-token "by"
+On sub-token ""\_"
+DEBUG: found token ""\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 3
+On sub-token """
+len of "In Sealight Markdown, a deflist is delimited by "_ " " is 53
+DEBUG: Found line "In Sealight Markdown, a deflist is delimited by "_ " " to be 0 for call to is_deflist
+len of "In Sealight Markdown, a deflist is delimited by "_ " " is 53
+On line-token "_"
+On sub-token "_"
+len of "_ " is 2
+DEBUG: Found line "_ " to be 1 for call to is_deflist
+len of "_ " is 2
+On line-token "The third **ever** commit to this project allows for *italic*, **bold**, and ***italic bold text***. Isn't that pretty cool? *I think so.* In fact, I would say that **many people think it is coool.**"
+On sub-token "The"
+On sub-token "third"
+On sub-token "**ever**"
+DEBUG: found token "**ever**" to be part of a bold section.
+On sub-token "commit"
+On sub-token "to"
+On sub-token "this"
+On sub-token "project"
+On sub-token "allows"
+On sub-token "for"
+On sub-token "*italic*,"
+DEBUG: found token "*italic*," to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 9
+On sub-token "**bold**,"
+DEBUG: found token "**bold**," to be part of a bold section.
+On sub-token "and"
+On sub-token "***italic"
+DEBUG: found token "***italic" to be part of an italic bold section.
+On sub-token "bold"
+On sub-token "text***."
+DEBUG: found token "text***." to be part of an italic bold section.
+On sub-token "Isn't"
+On sub-token "that"
+On sub-token "pretty"
+On sub-token "cool?"
+On sub-token "*I"
+DEBUG: found token "*I" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 2
+On sub-token "think"
+On sub-token "so.*"
+DEBUG: found token "so.*" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 4
+On sub-token "In"
+On sub-token "fact,"
+On sub-token "I"
+On sub-token "would"
+On sub-token "say"
+On sub-token "that"
+On sub-token "**many"
+DEBUG: found token "**many" to be part of a bold section.
+On sub-token "people"
+On sub-token "think"
+On sub-token "it"
+On sub-token "is"
+On sub-token "coool.**"
+DEBUG: found token "coool.**" to be part of a bold section.
+len of "The third <b>ever</b> commit to this project allows for <i>italic</i>, <b>bold</b>, and <b><i>italic bold text</i></b>. Isn't that pretty cool? <i>I think so.</i> In fact, I would say that <b>many people think it is coool.</b> " is 227
+DEBUG: Found line "The third <b>ever</b> commit to this project allows for <i>italic</i>, <b>bold</b>, and <b><i>italic bold text</i></b>. Isn't that pretty cool? <i>I think so.</i> In fact, I would say that <b>many people think it is coool.</b> " to be 0 for call to is_deflist
+len of "The third <b>ever</b> commit to this project allows for <i>italic</i>, <b>bold</b>, and <b><i>italic bold text</i></b>. Isn't that pretty cool? <i>I think so.</i> In fact, I would say that <b>many people think it is coool.</b> " is 227
+On line-token "With the new im**pro**vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens."
+On sub-token "With"
+On sub-token "the"
+On sub-token "new"
+On sub-token "im**pro**vement"
+DEBUG: found token "im**pro**vement" to be part of a bold section.
+On sub-token "of"
+On sub-token "the"
+On sub-token "scheme"
+On sub-token "for"
+On sub-token "parsing"
+On sub-token "through"
+On sub-token "lower-order"
+On sub-token "tokens,"
+On sub-token "you"
+On sub-token "can"
+On sub-token "make"
+On sub-token "ANY"
+On sub-token "character"
+On sub-token "italic,"
+On sub-token "bold,"
+On sub-token "or"
+On sub-token "italic"
+On sub-token "bold,"
+On sub-token "not"
+On sub-token "just"
+On sub-token "whole"
+On sub-token "tokens."
+len of "With the new im<b>pro</b>vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens. " is 166
+DEBUG: Found line "With the new im<b>pro</b>vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens. " to be 0 for call to is_deflist
+len of "With the new im<b>pro</b>vement of the scheme for parsing through lower-order tokens, you can make ANY character italic, bold, or italic bold, not just whole tokens. " is 166
+On line-token "# September 5th, 2023 Improvements"
+On sub-token "#"
+On sub-token "September"
+On sub-token "5th,"
+On sub-token "2023"
+On sub-token "Improvements"
+len of "# September 5th, 2023 Improvements " is 35
+DEBUG: Found line "# September 5th, 2023 Improvements " to be 0 for call to is_deflist
+Header level found to be 1 for line "# September 5th, 2023 Improvements "
+HEADER_ID_LEN: 0, HEADER_ID_CAPACITY: 43
+HEADER_ID: "september-5th%2C-2023-improvements"
+HEADER_ID_LEN: 35, HEADER_ID_CAPACITY: 43
+HEADERS_LEN is 3
+malloc pass 1
+strdup pass
+HEADER_IDS[HEADERS_LEN]: "september-5th%2C-2023-improvements"
+On line-token "You can also have ++underlined text++ now. Individu++a++l characters should work as well."
+On sub-token "You"
+On sub-token "can"
+On sub-token "also"
+On sub-token "have"
+On sub-token "++underlined"
+DEBUG: found token "++underlined" to be part of an underline section.
+On sub-token "text++"
+DEBUG: found token "text++" to be part of an underline section.
+On sub-token "now."
+On sub-token "Individu++a++l"
+DEBUG: found token "Individu++a++l" to be part of an underline section.
+On sub-token "characters"
+On sub-token "should"
+On sub-token "work"
+On sub-token "as"
+On sub-token "well."
+len of "You can also have <u>underlined text</u> now. Individu<u>a</u>l characters should work as well. " is 96
+DEBUG: Found line "You can also have <u>underlined text</u> now. Individu<u>a</u>l characters should work as well. " to be 0 for call to is_deflist
+len of "You can also have <u>underlined text</u> now. Individu<u>a</u>l characters should work as well. " is 96
+On line-token "You can also apply ==highlighting== to text! Highlighting uses the == delimiter "
+On sub-token "You"
+On sub-token "can"
+On sub-token "also"
+On sub-token "apply"
+On sub-token "==highlighting=="
+DEBUG: found token "==highlighting==" to be part of a highlight section.
+On sub-token "to"
+On sub-token "text!"
+On sub-token "Highlighting"
+On sub-token "uses"
+On sub-token "the"
+On sub-token "=="
+On sub-token "delimiter"
+len of "You can also apply <mark>highlighting</mark> to text! Highlighting uses the == delimiter " is 89
+DEBUG: Found line "You can also apply <mark>highlighting</mark> to text! Highlighting uses the == delimiter " to be 0 for call to is_deflist
+len of "You can also apply <mark>highlighting</mark> to text! Highlighting uses the == delimiter " is 89
+On line-token "Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight"
+On sub-token "Common"
+On sub-token "programming"
+On sub-token "notation"
+On sub-token "will"
+On sub-token "not"
+On sub-token "accidentally"
+On sub-token "collide"
+On sub-token "with"
+On sub-token "the"
+On sub-token "syntax"
+On sub-token "for"
+On sub-token "bold,"
+On sub-token "underline,"
+On sub-token "and"
+On sub-token "highlight"
+len of "Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight " is 109
+DEBUG: Found line "Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight " to be 0 for call to is_deflist
+len of "Common programming notation will not accidentally collide with the syntax for bold, underline, and highlight " is 109
+On line-token "```"
+On sub-token "```"
+len of "``` " is 4
+DEBUG: Found line "``` " to be 0 for call to is_deflist
+Determined line "``` " to be a code block delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+On line-token "if(COMPILER == "sealight")"
+On sub-token "if(COMPILER"
+On sub-token "=="
+On sub-token ""sealight")"
+len of "if(COMPILER == "sealight") " is 27
+DEBUG: Found line "if(COMPILER == "sealight") " to be 0 for call to is_deflist
+len of "if(COMPILER == "sealight") " is 27
+On line-token "{"
+On sub-token "{"
+len of "{ " is 2
+DEBUG: Found line "{ " to be 0 for call to is_deflist
+len of "{ " is 2
+On line-token "	productivity++;"
+On sub-token "	productivity++;"
+len of "	productivity++; " is 17
+DEBUG: Found line "	productivity++; " to be 0 for call to is_deflist
+len of "	productivity++; " is 17
+On line-token "}"
+On sub-token "}"
+len of "} " is 2
+DEBUG: Found line "} " to be 0 for call to is_deflist
+len of "} " is 2
+On line-token "```"
+On sub-token "```"
+len of "``` " is 4
+DEBUG: Found line "``` " to be 0 for call to is_deflist
+Determined line "``` " to be a code block delimiter, but nothing was added to the HTML, because this feature is not implemented yet!
+On line-token "Originally, if you wrote \\\_ you would have seen it just like that, but now it will correct the escape characters to just \_ . It is the same deal for writing \\\* as well, which will now appear as just \*."
+On sub-token "Originally,"
+On sub-token "if"
+On sub-token "you"
+On sub-token "wrote"
+On sub-token "\\\_"
+DEBUG: found token "\\\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 4
+On sub-token "you"
+On sub-token "would"
+On sub-token "have"
+On sub-token "seen"
+On sub-token "it"
+On sub-token "just"
+On sub-token "like"
+On sub-token "that,"
+On sub-token "but"
+On sub-token "now"
+On sub-token "it"
+On sub-token "will"
+On sub-token "correct"
+On sub-token "the"
+On sub-token "escape"
+On sub-token "characters"
+On sub-token "to"
+On sub-token "just"
+On sub-token "\_"
+DEBUG: found token "\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 2
+On sub-token "."
+On sub-token "It"
+On sub-token "is"
+On sub-token "the"
+On sub-token "same"
+On sub-token "deal"
+On sub-token "for"
+On sub-token "writing"
+On sub-token "\\\*"
+DEBUG: found token "\\\*" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 4
+On sub-token "as"
+On sub-token "well,"
+On sub-token "which"
+On sub-token "will"
+On sub-token "now"
+On sub-token "appear"
+On sub-token "as"
+On sub-token "just"
+On sub-token "\*."
+DEBUG: found token "\*." to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 3
+len of "Originally, if you wrote \_ you would have seen it just like that, but now it will correct the escape characters to just _ . It is the same deal for writing \* as well, which will now appear as just *. " is 202
+DEBUG: Found line "Originally, if you wrote \_ you would have seen it just like that, but now it will correct the escape characters to just _ . It is the same deal for writing \* as well, which will now appear as just *. " to be 0 for call to is_deflist
+len of "Originally, if you wrote \_ you would have seen it just like that, but now it will correct the escape characters to just _ . It is the same deal for writing \* as well, which will now appear as just *. " is 202
+On line-token "You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing \_italic\_ will give you _italic_, writing \_\_bold\_\_ will give you __bold__, and writing \_\_\_italic bold\_\_\_ will give you ___italic bold___."
+On sub-token "You"
+On sub-token "can"
+On sub-token "also"
+On sub-token "now"
+On sub-token "use"
+On sub-token "underscores"
+On sub-token "to"
+On sub-token "initiate"
+On sub-token "italic,"
+On sub-token "bold,"
+On sub-token "and"
+On sub-token "bold"
+On sub-token "italic"
+On sub-token "text."
+On sub-token "For"
+On sub-token "example,"
+On sub-token "writing"
+On sub-token "\_italic\_"
+DEBUG: found token "\_italic\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 10
+On sub-token "will"
+On sub-token "give"
+On sub-token "you"
+On sub-token "_italic_,"
+DEBUG: found token "_italic_," to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 9
+On sub-token "writing"
+On sub-token "\_\_bold\_\_"
+DEBUG: found token "\_\_bold\_\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 12
+On sub-token "will"
+On sub-token "give"
+On sub-token "you"
+On sub-token "__bold__,"
+DEBUG: found token "__bold__," to be part of a bold section.
+On sub-token "and"
+On sub-token "writing"
+On sub-token "\_\_\_italic"
+DEBUG: found token "\_\_\_italic" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 12
+On sub-token "bold\_\_\_"
+DEBUG: found token "bold\_\_\_" to be part of an italic section.
+DEBUG [ITALIC]: value of j is 0 and value of preprocessing_token_len is 10
+On sub-token "will"
+On sub-token "give"
+On sub-token "you"
+On sub-token "___italic"
+DEBUG: found token "___italic" to be part of an italic bold section, delimited by UNDERSCORES.
+On sub-token "bold___."
+DEBUG: found token "bold___." to be part of an italic bold section, delimited by UNDERSCORES.
+len of "You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing _italic_ will give you <i>italic</i>, writing __bold__ will give you <b>bold</b>, and writing ___italic bold___ will give you <b><i>italic bold</i></b>. " is 255
+DEBUG: Found line "You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing _italic_ will give you <i>italic</i>, writing __bold__ will give you <b>bold</b>, and writing ___italic bold___ will give you <b><i>italic bold</i></b>. " to be 0 for call to is_deflist
+len of "You can also now use underscores to initiate italic, bold, and bold italic text. For example, writing _italic_ will give you <i>italic</i>, writing __bold__ will give you <b>bold</b>, and writing ___italic bold___ will give you <b><i>italic bold</i></b>. " is 255
+On line-token "# September 6th, 2023 Improvements"
+On sub-token "#"
+On sub-token "September"
+On sub-token "6th,"
+On sub-token "2023"
+On sub-token "Improvements"
+len of "# September 6th, 2023 Improvements " is 35
+DEBUG: Found line "# September 6th, 2023 Improvements " to be 0 for call to is_deflist
+Header level found to be 1 for line "# September 6th, 2023 Improvements "
+HEADER_ID_LEN: 0, HEADER_ID_CAPACITY: 43
+HEADER_ID: "september-6th%2C-2023-improvements"
+HEADER_ID_LEN: 35, HEADER_ID_CAPACITY: 43
+HEADERS_LEN is 4
+malloc pass 1
+strdup pass
+HEADER_IDS[HEADERS_LEN]: "september-6th%2C-2023-improvements"
+On line-token "If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion."
+On sub-token "If"
+On sub-token "you"
+On sub-token "write"
+On sub-token "[toc]"
+On sub-token "as"
+On sub-token "the"
+On sub-token "first"
+On sub-token "line"
+On sub-token "of"
+On sub-token "the"
+On sub-token "file,"
+On sub-token "then"
+On sub-token "a"
+On sub-token "table"
+On sub-token "of"
+On sub-token "contents"
+On sub-token "will"
+On sub-token "be"
+On sub-token "automatically"
+On sub-token "generated."
+On sub-token "As"
+On sub-token "the"
+On sub-token "document"
+On sub-token "is"
+On sub-token "built,"
+On sub-token "all"
+On sub-token "of"
+On sub-token "the"
+On sub-token "headers"
+On sub-token "will"
+On sub-token "be"
+On sub-token "kept"
+On sub-token "track"
+On sub-token "of,"
+On sub-token "and"
+On sub-token "sent"
+On sub-token "to"
+On sub-token "stdout"
+On sub-token "before"
+On sub-token "the"
+On sub-token "real"
+On sub-token "HTML"
+On sub-token "conversion."
+len of "If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion. " is 228
+DEBUG: Found line "If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion. " to be 0 for call to is_deflist
+len of "If you write [toc] as the first line of the file, then a table of contents will be automatically generated. As the document is built, all of the headers will be kept track of, and sent to stdout before the real HTML conversion. " is 228
+On line-token "The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). "
+On sub-token "The"
+On sub-token "listings"
+On sub-token "in"
+On sub-token "the"
+On sub-token "table"
+On sub-token "of"
+On sub-token "contents"
+On sub-token "will"
+On sub-token "also"
+On sub-token "be"
+On sub-token "clickable"
+On sub-token "links"
+On sub-token "that"
+On sub-token "will"
+On sub-token "take"
+On sub-token "you"
+On sub-token "to"
+On sub-token "those"
+On sub-token "sections"
+On sub-token "of"
+On sub-token "the"
+On sub-token "page."
+On sub-token "Ironically"
+On sub-token "though,"
+On sub-token "the"
+On sub-token "parser"
+On sub-token "cannot"
+On sub-token "pick"
+On sub-token "up"
+On sub-token "on"
+On sub-token "other"
+On sub-token "Markdown"
+On sub-token "links"
+On sub-token "(yet)."
+len of "The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). " is 193
+DEBUG: Found line "The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). " to be 0 for call to is_deflist
+len of "The listings in the table of contents will also be clickable links that will take you to those sections of the page. Ironically though, the parser cannot pick up on other Markdown links (yet). " is 193
+On line-token "Subheaders will be indented in the table of contents accordingly."
+On sub-token "Subheaders"
+On sub-token "will"
+On sub-token "be"
+On sub-token "indented"
+On sub-token "in"
+On sub-token "the"
+On sub-token "table"
+On sub-token "of"
+On sub-token "contents"
+On sub-token "accordingly."
+len of "Subheaders will be indented in the table of contents accordingly. " is 66
+DEBUG: Found line "Subheaders will be indented in the table of contents accordingly. " to be 0 for call to is_deflist
+len of "Subheaders will be indented in the table of contents accordingly. " is 66
+On line-token "Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links."
+On sub-token "Special"
+On sub-token "characters"
+On sub-token "in"
+On sub-token "headers"
+On sub-token "will"
+On sub-token "be"
+On sub-token "detected"
+On sub-token "and"
+On sub-token "converted"
+On sub-token "to"
+On sub-token "their"
+On sub-token "respective"
+On sub-token "HTML"
+On sub-token "codes"
+On sub-token "when"
+On sub-token "their"
+On sub-token "IDs"
+On sub-token "are"
+On sub-token "being"
+On sub-token "constructed"
+On sub-token "for"
+On sub-token "the"
+On sub-token "table"
+On sub-token "of"
+On sub-token "contents."
+On sub-token "Doing"
+On sub-token "this"
+On sub-token "makes"
+On sub-token "it"
+On sub-token "so"
+On sub-token "that"
+On sub-token "headers"
+On sub-token "like"
+On sub-token ""September"
+On sub-token "6th,"
+On sub-token "2023"
+On sub-token "Improvements""
+On sub-token "do"
+On sub-token "not"
+On sub-token "create"
+On sub-token "broken"
+On sub-token "links."
+len of "Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links. " is 260
+DEBUG: Found line "Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links. " to be 0 for call to is_deflist
+len of "Special characters in headers will be detected and converted to their respective HTML codes when their IDs are being constructed for the table of contents. Doing this makes it so that headers like "September 6th, 2023 Improvements" do not create broken links. " is 260
+On line-token "h1 headers will be followed by a horizontal rule"
+On sub-token "h1"
+On sub-token "headers"
+On sub-token "will"
+On sub-token "be"
+On sub-token "followed"
+On sub-token "by"
+On sub-token "a"
+On sub-token "horizontal"
+On sub-token "rule"
+len of "h1 headers will be followed by a horizontal rule " is 49
+DEBUG: Found line "h1 headers will be followed by a horizontal rule " to be 0 for call to is_deflist
+len of "h1 headers will be followed by a horizontal rule " is 49
+On line-token "Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents)"
+On sub-token "Expanded"
+On sub-token "the"
+On sub-token "amount"
+On sub-token "of"
+On sub-token "special"
+On sub-token "characters"
+On sub-token "supported"
+On sub-token "in"
+On sub-token "headers"
+On sub-token "(as"
+On sub-token "it"
+On sub-token "pertains"
+On sub-token "to"
+On sub-token "clickable"
+On sub-token "links"
+On sub-token "in"
+On sub-token "the"
+On sub-token "Table"
+On sub-token "of"
+On sub-token "Contents)"
+len of "Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents) " is 124
+DEBUG: Found line "Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents) " to be 0 for call to is_deflist
+len of "Expanded the amount of special characters supported in headers (as it pertains to clickable links in the Table of Contents) " is 124
+On line-token "Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule."
+On sub-token "Horizontal"
+On sub-token "rules"
+On sub-token "are"
+On sub-token "supported."
+On sub-token "For"
+On sub-token "this,"
+On sub-token "write"
+On sub-token "three"
+On sub-token "hyphens"
+On sub-token "(---),"
+On sub-token "followed"
+On sub-token "immediately"
+On sub-token "by"
+On sub-token "a"
+On sub-token "newline"
+On sub-token "and"
+On sub-token "nothing"
+On sub-token "else."
+On sub-token "For"
+On sub-token "example,"
+On sub-token "the"
+On sub-token "line"
+On sub-token "after"
+On sub-token "this"
+On sub-token "will"
+On sub-token "be"
+On sub-token "a"
+On sub-token "horizontal"
+On sub-token "rule."
+len of "Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule. " is 181
+DEBUG: Found line "Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule. " to be 0 for call to is_deflist
+len of "Horizontal rules are supported. For this, write three hyphens (---), followed immediately by a newline and nothing else. For example, the line after this will be a horizontal rule. " is 181
+On line-token "---"
+On sub-token "---"
+len of "--- " is 4
+DEBUG: Found line "--- " to be 0 for call to is_deflist
+len of "--- " is 4
+On line-token "The document now has a small margin on the left and right. This improves readability. "
+On sub-token "The"
+On sub-token "document"
+On sub-token "now"
+On sub-token "has"
+On sub-token "a"
+On sub-token "small"
+On sub-token "margin"
+On sub-token "on"
+On sub-token "the"
+On sub-token "left"
+On sub-token "and"
+On sub-token "right."
+On sub-token "This"
+On sub-token "improves"
+On sub-token "readability."
+len of "The document now has a small margin on the left and right. This improves readability. " is 86
+DEBUG: Found line "The document now has a small margin on the left and right. This improves readability. " to be 0 for call to is_deflist
+len of "The document now has a small margin on the left and right. This improves readability. " is 86
+len 3623 capacity 6400
+<!DOCTYPE html>
+<html>
+<head>
+	 <style>
+		body {
+			font-family: Minion Pro Display;
+			width: 90%;
+			margin: 0 auto;
+		}
+.admonition {
+background-color: #f7f7f7;
+margin-bottom: 10px;
+position: relative;
+overflow: hidden;
+padding-left: 12px; /* Added padding to create space between the vertical stripe and the label */
+}
+/* This is the vertical stripe */
+.admonition:before {
+content: ;
+position: absolute;
+top: 0;
+left: 0;
+width: 6px;
+height: 100%;
+background-color: #ffa500; /* Default vertical stripe color */
+}
+
+/* Add more custom classes and styles for different variants if desired */
+
+.admonition h4 {
+margin: 0;
+padding: 10px 8px;
+font-size: 18px;
+color: black; /* Adjust the color as needed */
+background-color: #f4e7d4; /* Adjust the default header background color as needed */
+border-radius: 0 4px 4px 0; /* Added border-radius to only round the right side */
+margin-left: -6px;
+margin-right: -8px;
+}
+
+.admonition.example h4 {
+background-color: #f2edff;
+}
+
+/* format for admonition variants */
+.admonition.example:before {
+background-color: #7C4DFF;
+}
+
+.admonition.note h4 {
+background-color: #ecf3ff;
+}
+
+.admonition.note:before {
+background-color: #448aff;
+}
+
+.admonition.tip h4 {
+background-color: #e5f8f6;
+}
+
+.admonition.tip:before {
+background-color: #00bfa5;
+}
+.admonition.success h4 {
+background-color: green;
+}
+
+.admonition.success:before {
+background-color: green;
+}
+
+.admonition.warning h4 {
+background-color: ##fff4e5;
+}
+
+.admonition.warning:before {
+background-color: #ff9100;
+}
+
+.admonition.danger h4 {
+background-color: #ffe7ec;
+}
+
+.admonition.danger:before {
+background-color: #ff1744;
+}
+.admonition p {
+margin-top: 10px;
+}
+</style></head>
+<body>
+
