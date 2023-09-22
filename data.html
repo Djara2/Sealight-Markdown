@@ -1,3 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	 <style>
+		body {
+			font-family: Minion Pro Display;
+			width: 90%;
+			margin: 0 auto;
+		}
+.admonition {
+background-color: #f7f7f7;
+margin-bottom: 10px;
+position: relative;
+overflow: hidden;
+padding-left: 12px; /* Added padding to create space between the vertical stripe and the label */
+}
+/* This is the vertical stripe */
+.admonition:before {
+content: ;
+position: absolute;
+top: 0;
+left: 0;
+width: 6px;
+height: 100%;
+background-color: #ffa500; /* Default vertical stripe color */
+}
+
+/* Add more custom classes and styles for different variants if desired */
+
+.admonition h4 {
+margin: 0;
+padding: 10px 8px;
+font-size: 18px;
+color: black; /* Adjust the color as needed */
+background-color: #f4e7d4; /* Adjust the default header background color as needed */
+border-radius: 0 4px 4px 0; /* Added border-radius to only round the right side */
+margin-left: -6px;
+margin-right: -8px;
+}
+
+.admonition.example h4 {
+background-color: #f2edff;
+}
+
+/* format for admonition variants */
+.admonition.example:before {
+background-color: #7C4DFF;
+}
+
+.admonition.note h4 {
+background-color: #ecf3ff;
+}
+
+.admonition.note:before {
+background-color: #448aff;
+}
+
+.admonition.tip h4 {
+background-color: #e5f8f6;
+}
+
+.admonition.tip:before {
+background-color: #00bfa5;
+}
+.admonition.success h4 {
+background-color: green;
+}
+
+.admonition.success:before {
+background-color: green;
+}
+
+.admonition.warning h4 {
+background-color: ##fff4e5;
+}
+
+.admonition.warning:before {
+background-color: #ff9100;
+}
+
+.admonition.danger h4 {
+background-color: #ffe7ec;
+}
+
+.admonition.danger:before {
+background-color: #ff1744;
+}
+.admonition p {
+margin-top: 10px;
+}
+</style></head>
+<body>
+
 <h1>Table of Contents</h1>
 
 <hr>

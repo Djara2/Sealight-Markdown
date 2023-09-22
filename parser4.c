@@ -1142,7 +1142,7 @@ int main(int argc, char *argv[])
 	insert_char(&html, &html_len, &html_capacity, '\0');
 	printf("len %d capacity %d\n", html_len, html_capacity);
 
-	printf("%s\n", HTML_HEADER);
+	fprintf(output, "%s\n", HTML_HEADER);
 
 	// print out the table of contents first, if it was in the document
 	if(TOC_FLAG) 
